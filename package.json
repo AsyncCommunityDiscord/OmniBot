@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "dev": "node --loader ts-node/esm src/index.ts",
+    "dev": "node ./bootstrap/validate-env-vars.mjs && node --loader ts-node/esm src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },
@@ -23,6 +23,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.33.0",
     "@types/node": "^22.17.2",
+    "dotenv": "^17.2.1",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
