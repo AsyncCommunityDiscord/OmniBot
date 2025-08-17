@@ -1,4 +1,5 @@
 import { Client, Events } from "discord.js";
+import { loadCommands } from "./core/command-loader.js";
 import { loadModules } from "./core/module-loader.js";
 
 const token = process.env["DISCORD_TOKEN"];
@@ -6,12 +7,16 @@ const token = process.env["DISCORD_TOKEN"];
 const modules = await loadModules("./modules");
 const intents = modules.flatMap((module) => module.intents).filter((a) => !!a);
 
-export const client = new Client({
+const client = new Client({
   intents: intents,
 });
 
-client.once(Events.ClientReady, (client) => {
-  modules.forEach((module) => module.init(client));
+client.once(Events.ClientReady, (readyClient) => {
+  for (const module of modules) {
+    module.init(readyClient, module.registry);
+
+    loadCommands(readyClient, module);
+  }
 });
 
 await client.login(token);
