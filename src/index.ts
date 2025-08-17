@@ -1,5 +1,5 @@
 import { Client, Events } from "discord.js";
-import { loadModules } from "./loader/loader.js";
+import { loadModules } from "./core/module-loader.js";
 
 const token = process.env["DISCORD_TOKEN"];
 
