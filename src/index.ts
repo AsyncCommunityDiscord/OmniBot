@@ -6,12 +6,12 @@ const token = process.env["DISCORD_TOKEN"];
 const modules = await loadModules("./modules");
 const intents = modules.flatMap((module) => module.intents).filter((a) => !!a);
 
-const client = new Client({
+export const client = new Client({
   intents: intents,
 });
 
-client.once(Events.ClientReady, (readyClient) => {
-  console.log("Bot is ready!", readyClient.options.intents);
+client.once(Events.ClientReady, (client) => {
+  modules.forEach((module) => module.init(client));
 });
 
 await client.login(token);

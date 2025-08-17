@@ -8,7 +8,6 @@ export default defineModule({
   version: "1.0.0",
   intents: [GatewayIntentBits.GuildVoiceStates],
   init() {},
-  destroy() {},
   install() {},
   uninstall() {},
 });

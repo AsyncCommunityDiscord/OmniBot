@@ -1,4 +1,4 @@
-import { GatewayIntentBits, type Guild } from "discord.js";
+import { type Client, GatewayIntentBits, type Guild } from "discord.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 /**
@@ -38,25 +38,26 @@ export interface Module {
 
   /**
    * Called when the module is initialized at startup.
+   *
+   * @param client The Discord client instance.
    */
-  init: () => void;
-
-  /**
-   * Called when the module is destroyed at shutdown.
-   */
-  destroy: () => void;
+  init: (client: Client) => void;
 
   /**
    * Called when the module is installed in a guild.
+   *
+   * @param client The Discord client instance.
    * @param guild The guild where the module is being installed.
    */
-  install: (guild: Guild) => void;
+  install: (client: Client, guild: Guild) => void;
 
   /**
    * Called when the module is uninstalled from a guild.
+   *
+   * @param client The Discord client instance.
    * @param guild The guild from which the module is being uninstalled.
    */
-  uninstall: (guild: Guild) => void;
+  uninstall: (client: Client, guild: Guild) => void;
 }
 
 /**
