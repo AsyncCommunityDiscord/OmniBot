@@ -1,5 +1,6 @@
 import { GatewayIntentBits } from "discord.js";
 import { defineModule } from "../../lib/module.js";
+import testCommand from "./commands/test.command.js";
 
 export default defineModule({
   id: "example",
@@ -7,7 +8,9 @@ export default defineModule({
   description: "An example module for demonstration purposes.",
   version: "1.0.0",
   intents: [GatewayIntentBits.GuildVoiceStates],
-  init() {},
+  init(_, registry) {
+    registry.registerCommand(testCommand);
+  },
   install() {},
   uninstall() {},
 });
