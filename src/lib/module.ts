@@ -1,6 +1,10 @@
 import type { Guild } from "discord.js";
 import type { Declared } from "./declared.js";
 
+/**
+ * Represents a module in the system.
+ * A module is a self-contained unit of functionality that can be installed and uninstalled in a guild.
+ */
 export interface Module {
   /**
    * Unique identifier for the module.
@@ -50,6 +54,10 @@ export interface Module {
   uninstall: (guild: Guild) => void;
 }
 
+/**
+ * Defines a module with the required properties and methods.
+ * @param module The module definition to declare.
+ */
 export function defineModule(module: Module): Declared<Module> {
   return {
     type: "module",
