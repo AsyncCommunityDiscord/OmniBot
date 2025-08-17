@@ -1,4 +1,4 @@
-import type { Guild } from "discord.js";
+import { GatewayIntentBits, type Guild } from "discord.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 /**
@@ -30,6 +30,11 @@ export interface Module {
    * Optional author of the module.
    */
   author?: string;
+
+  /**
+   * Intents that the module requires.
+   */
+  intents?: GatewayIntentBits[];
 
   /**
    * Called when the module is initialized at startup.
