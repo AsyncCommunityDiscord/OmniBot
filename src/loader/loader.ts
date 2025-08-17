@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import * as fs from "fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "path";
 import type { Declared } from "../lib/declared.js";
@@ -6,25 +6,30 @@ import type { Module } from "../lib/module.js";
 
 const __dirname = path.resolve(fileURLToPath(import.meta.url), "..", "..");
 
-function resolve(filePath: string): string {
-  return path.resolve(__dirname, filePath);
-}
-
-export async function loadModules(directory: string): Promise<Module[]> {
+export async function loadModules(basePath: string): Promise<Module[]> {
   const modules: Module[] = [];
-  const folders = fs.readdirSync(resolve(directory));
+  const moduleFolder = path.resolve(__dirname, basePath);
 
-  for (const folder of folders) {
-    const modulePath = resolve(`${directory}/${folder}`);
-    if (!fs.statSync(modulePath).isDirectory()) {
-      continue;
-    }
+  const moduleFolderFiles = await fs.readdir(moduleFolder, {
+    withFileTypes: true,
+  });
 
+  const moduleNames = moduleFolderFiles
+    .filter(
+      (dirent) =>
+        dirent.isDirectory() ||
+        console.warn(`Skipping non-directory module | path = ${dirent.name}`)
+    )
+    .map((dirent) => dirent.name);
+
+  for (const folder of moduleNames) {
+    const modulePath = path.resolve(moduleFolder, folder);
     const module = await loadModule(modulePath);
+
     if (module) {
       modules.push(module);
     } else {
-      console.warn(`Module not found or invalid in path: ${modulePath}`);
+      console.warn(`Module not found or invalid | path = ${modulePath}`);
     }
   }
 
@@ -32,29 +37,29 @@ export async function loadModules(directory: string): Promise<Module[]> {
 }
 
 export async function loadModule(modulePath: string): Promise<Module | null> {
-  const declaration =
-    fs.readdirSync(modulePath).find((file) => file.match(/\.module\.ts$/)) ||
-    fs.readdirSync(modulePath).find((file) => file.match(/\.module\.js$/));
+  const moduleEntryPoint = (await fs.readdir(modulePath)).find(
+    (file) => file.match(/\.module\.ts$/) || file.match(/\.module\.js$/)
+  );
 
-  if (!declaration) {
-    console.warn(`Module declaration not found in path: ${modulePath}`);
+  if (!moduleEntryPoint) {
+    console.warn(`Module entry point not found | path = ${modulePath}`);
     return null;
   }
 
-  const moduleFilePath = path.resolve(modulePath, declaration);
+  const moduleFilePath = path.resolve(modulePath, moduleEntryPoint);
 
   const imported: { default: Declared<Module> } = await import(
     pathToFileURL(moduleFilePath).href
   );
 
   if (!imported) {
-    console.warn(`Failed to import module from: ${moduleFilePath}`);
+    console.warn(`Failed to import module | path = ${moduleFilePath}`);
     return null;
   }
 
   const module = imported.default;
   if (module.type !== "module") {
-    console.warn(`Invalid module type in: ${moduleFilePath}`);
+    console.warn(`Invalid module | path = ${moduleFilePath}`);
     return null;
   }
 
