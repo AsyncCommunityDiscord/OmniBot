@@ -1,5 +1,6 @@
 export enum DeclarationType {
   Module = "module",
+  Command = "command",
 }
 
 /**
