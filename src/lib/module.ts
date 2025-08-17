@@ -10,9 +10,9 @@ export interface Module {
   destroy: () => void;
 }
 
-export const defineModule = (module: Module): Declared<Module> => {
+export function defineModule(module: Module): Declared<Module> {
   return {
     type: "module",
     ...module,
   };
-};
+}

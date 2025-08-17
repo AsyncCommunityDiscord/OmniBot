@@ -5,11 +5,12 @@ import type { Declared } from "../lib/declared.js";
 import type { Module } from "../lib/module.js";
 
 const __dirname = path.resolve(fileURLToPath(import.meta.url), "..", "..");
-const resolve = (filePath: string): string => {
-  return path.resolve(__dirname, filePath);
-};
 
-export const loadModules = async (directory: string): Promise<Module[]> => {
+function resolve(filePath: string): string {
+  return path.resolve(__dirname, filePath);
+}
+
+export async function loadModules(directory: string): Promise<Module[]> {
   const modules: Module[] = [];
   const folders = fs.readdirSync(resolve(directory));
 
@@ -28,11 +29,9 @@ export const loadModules = async (directory: string): Promise<Module[]> => {
   }
 
   return modules;
-};
+}
 
-export const loadModule = async (
-  modulePath: string
-): Promise<Module | null> => {
+export async function loadModule(modulePath: string): Promise<Module | null> {
   const declaration =
     fs.readdirSync(modulePath).find((file) => file.match(/\.module\.ts$/)) ||
     fs.readdirSync(modulePath).find((file) => file.match(/\.module\.js$/));
@@ -60,4 +59,4 @@ export const loadModule = async (
   }
 
   return module;
-};
+}
