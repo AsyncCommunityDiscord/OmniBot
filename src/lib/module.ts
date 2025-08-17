@@ -1,5 +1,5 @@
 import type { Guild } from "discord.js";
-import type { Declared } from "./declared.js";
+import { DeclarationType, type Declared } from "./declared.js";
 
 /**
  * Represents a module in the system.
@@ -60,7 +60,7 @@ export interface Module {
  */
 export function defineModule(module: Module): Declared<Module> {
   return {
-    type: "module",
+    type: DeclarationType.Module,
     ...module,
   };
 }
