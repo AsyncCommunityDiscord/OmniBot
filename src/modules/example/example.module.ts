@@ -7,4 +7,6 @@ export default defineModule({
   version: "1.0.0",
   init() {},
   destroy() {},
+  install() {},
+  uninstall() {},
 });
