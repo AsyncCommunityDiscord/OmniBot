@@ -1,0 +1,8 @@
+model ModuleActivation {
+  moduleId String
+  guildId  String
+
+  activated Boolean
+
+  @@id([moduleId, guildId])
+}

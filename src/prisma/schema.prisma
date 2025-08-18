@@ -1,0 +1,10 @@
+
+// === Modèles de core\models\modules.prisma ===
+model ModuleActivation {
+  moduleId String
+  guildId  String
+
+  activated Boolean
+
+  @@id([moduleId, guildId])
+}

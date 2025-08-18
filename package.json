@@ -9,7 +9,11 @@
     "dev": "node ./bootstrap/validate-env-vars.mjs && node --loader ts-node/esm src/index.ts",
     "start": "node ./bootstrap/validate-env-vars.mjs && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "prisma:consolidate": "node --loader ts-node/esm scripts/consolidate-schema.ts",
+    "prisma:generate": "pnpm prisma:consolidate && prisma generate",
+    "prisma:migrate": "pnpm prisma:consolidate && prisma migrate dev",
+    "prisma:studio": "pnpm prisma:consolidate && prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +21,9 @@
   "packageManager": "pnpm@10.14.0",
   "type": "module",
   "dependencies": {
-    "discord.js": "^14.21.0"
+    "@prisma/client": "6.14.0",
+    "discord.js": "^14.21.0",
+    "prisma": "^6.14.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
