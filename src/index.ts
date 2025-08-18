@@ -1,4 +1,5 @@
 import { Client, Events } from "discord.js";
+import coreModule from "./core/core.module.js";
 import { loadGlobalCommands } from "./core/loaders/command-loader.js";
 import { loadGlobalEvents } from "./core/loaders/listener-loader.js";
 import { loadModules } from "./core/loaders/module-loader.js";
@@ -16,6 +17,8 @@ client.once(Events.ClientReady, (readyClient) => {
   for (const module of modules) {
     module.onLoad(readyClient, module.registry);
   }
+
+  coreModule.onLoad(readyClient, coreModule.registry);
 
   loadGlobalCommands(readyClient);
   loadGlobalEvents(readyClient);
