@@ -1,8 +1,7 @@
 {
   "**/*.{js,mjs,cjs,ts,mts,cts}": [
     "prettier --check",
-    "oxlint --max-warnings 0",
-    "eslint --max-warnings 0"
+    "oxlint --deny-warnings"
   ],
   "**/*.{md,json}": "prettier --check"
 }
