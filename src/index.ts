@@ -1,5 +1,6 @@
 import { Client, Events } from "discord.js";
 import { loadGlobalCommands } from "./core/command-loader.js";
+import { loadGlobalEvents } from "./core/listener-loader.js";
 import { loadModules } from "./core/module-loader.js";
 
 const token = process.env["DISCORD_TOKEN"];
@@ -17,6 +18,7 @@ client.once(Events.ClientReady, (readyClient) => {
   }
 
   loadGlobalCommands(readyClient);
+  loadGlobalEvents(readyClient);
 });
 
 await client.login(token);
