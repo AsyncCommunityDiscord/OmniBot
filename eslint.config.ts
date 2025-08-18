@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import oxlint from "eslint-plugin-oxlint";
 import eslintPrettierRecommended from "eslint-plugin-prettier/recommended";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
@@ -13,4 +14,5 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   eslintPrettierRecommended,
+  ...oxlint.configs["flat/recommended"],
 ]);
