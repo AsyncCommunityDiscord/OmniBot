@@ -4,7 +4,12 @@ import path from "path";
 import { DeclarationType, type Declared } from "../../lib/declared.js";
 import type { Module } from "../../lib/module.js";
 
-const __dirname = path.resolve(fileURLToPath(import.meta.url), "..", "..");
+const __dirname = path.resolve(
+  fileURLToPath(import.meta.url),
+  "..",
+  "..",
+  ".."
+);
 
 export async function loadModules(basePath: string): Promise<Module[]> {
   const modules: Module[] = [];
