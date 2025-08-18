@@ -1,4 +1,12 @@
-import type { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import type {
+  AutocompleteInteraction,
+  CommandInteraction,
+  SlashCommandBuilder,
+  SlashCommandOptionsOnlyBuilder,
+  SlashCommandSubcommandBuilder,
+  SlashCommandSubcommandGroupBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 /**
@@ -8,7 +16,12 @@ export interface Command {
   /**
    * The command data used to register the command with Discord.
    */
-  data: SlashCommandBuilder;
+  data:
+    | SlashCommandBuilder
+    | SlashCommandSubcommandBuilder
+    | SlashCommandSubcommandGroupBuilder
+    | SlashCommandSubcommandsOnlyBuilder
+    | SlashCommandOptionsOnlyBuilder;
 
   /**
    * The function to execute when the command is invoked.
@@ -16,6 +29,13 @@ export interface Command {
    * @param interaction The interaction that triggered the command.
    */
   execute: (interaction: CommandInteraction) => Promise<void>;
+
+  /**
+   * Optional function to handle autocomplete interactions for the command.
+   *
+   * @param interaction The autocomplete interaction that triggered the command.
+   */
+  complete?: (interaction: AutocompleteInteraction) => Promise<void>;
 }
 
 /**
