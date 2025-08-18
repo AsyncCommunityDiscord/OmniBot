@@ -5,10 +5,10 @@ import { loadModules } from "./core/module-loader.js";
 
 const token = process.env["DISCORD_TOKEN"];
 
-const modules = await loadModules("./modules");
+export const modules = await loadModules("./modules");
 const intents = modules.flatMap((module) => module.intents).filter((a) => !!a);
 
-const client = new Client({
+export const client = new Client({
   intents: intents,
 });
 

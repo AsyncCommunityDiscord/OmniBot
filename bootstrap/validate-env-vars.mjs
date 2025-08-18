@@ -6,6 +6,9 @@ const REQUIRED_ENV_VARS = {
   DISCORD_TOKEN: {
     sensitive: true,
   },
+  DATABASE_URL: {
+    sensitive: true,
+  },
 };
 
 // --- Functions ---
