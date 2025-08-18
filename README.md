@@ -11,18 +11,20 @@ discord.gg/graven</code> both by the moderators and the members.
 Most of the contributors are part of the staff but the members are also allowed to contribute.
 
 ---
+
 ## Global information
 
-| Global information |                                                                                          |
-|--------------------|------------------------------------------------------------------------------------------|
-| Description        |  The future Async - Community Discord bot, which will handle progressively all our needs |
-| Version            | 1.0 |
+| Global information |                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| Description        | The future Async - Community Discord bot, which will handle progressively all our needs |
+| Version            | 1.0                                                                                     |
 
 ---
 
 ## State
+
 ![](https://img.shields.io/badge/State-In_development-orange?style=for-the-badge)
 ![](https://img.shields.io/github/issues/AsyncCommunityDiscord/AsyncSupport?style=for-the-badge)
 ![](https://img.shields.io/github/issues-pr/AsyncCommunityDiscord/AsyncSupport?style=for-the-badge)
 
---- 
+---
