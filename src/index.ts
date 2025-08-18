@@ -1,7 +1,7 @@
 import { Client, Events } from "discord.js";
-import { loadGlobalCommands } from "./core/command-loader.js";
-import { loadGlobalEvents } from "./core/listener-loader.js";
-import { loadModules } from "./core/module-loader.js";
+import { loadGlobalCommands } from "./core/loaders/command-loader.js";
+import { loadGlobalEvents } from "./core/loaders/listener-loader.js";
+import { loadModules } from "./core/loaders/module-loader.js";
 
 const token = process.env["DISCORD_TOKEN"];
 

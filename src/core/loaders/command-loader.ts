@@ -1,5 +1,5 @@
 import { type Client, REST, Routes } from "discord.js";
-import coreRegistry from "./core-registry.js";
+import coreModule from "../core.module.js";
 
 /**
  * Loads global commands from the core registry and registers them with Discord.
@@ -7,7 +7,7 @@ import coreRegistry from "./core-registry.js";
  * @param client The Discord client instance used to register the commands.
  */
 export function loadGlobalCommands(client: Client) {
-  const coreCommands = coreRegistry.commands.map((command) =>
+  const coreCommands = coreModule.registry.commands.map((command) =>
     command.data.toJSON()
   );
 
