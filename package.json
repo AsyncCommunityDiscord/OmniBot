@@ -1,5 +1,5 @@
 {
-  "name": "OmniBot",
+  "name": "omni-bot",
   "version": "0.1.0",
   "description": "",
   "main": "./dist/index.js",
