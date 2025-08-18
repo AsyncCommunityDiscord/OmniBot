@@ -138,4 +138,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# Editor directories and files
+.idea
+
 /src/generated/prisma
