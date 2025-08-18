@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import { declareCommand } from "../../lib/command.js";
 import { Colors } from "../../utils/colors.js";
+import { installModule, uninstallModule } from "../loaders/module-installer.js";
 import moduleService from "../services/module.service.js";
 
 async function moduleList(interaction: ChatInputCommandInteraction) {
@@ -58,7 +59,7 @@ async function enableModule(interaction: ChatInputCommandInteraction) {
   }
 
   try {
-    await moduleService.installModule(module.id, interaction.guild!);
+    await installModule(module, interaction.guild!);
     await interaction.reply({
       content: `Module "${moduleName}" has been installed successfully.`,
       flags: MessageFlags.Ephemeral,
@@ -87,7 +88,7 @@ async function disableModule(interaction: ChatInputCommandInteraction) {
   }
 
   try {
-    await moduleService.uninstallModule(module.id, interaction.guild!);
+    await uninstallModule(module, interaction.guild!);
     await interaction.reply({
       content: `Module "${moduleName}" has been uninstalled successfully.`,
       flags: MessageFlags.Ephemeral,

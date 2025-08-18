@@ -3,10 +3,10 @@ import { declareCommand } from "../../../lib/command.js";
 
 export default declareCommand({
   data: new SlashCommandBuilder()
-    .setName("test")
-    .setDescription("Test command"),
+    .setName("other-test")
+    .setDescription("Other test command"),
 
   async execute(interaction) {
-    await interaction.reply("This is a test command!");
+    await interaction.reply("This is another test command!");
   },
 });

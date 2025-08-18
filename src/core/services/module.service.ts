@@ -30,7 +30,7 @@ class ModuleService implements Service {
     });
   }
 
-  async getModuleStateIn(moduleId: string, guildId: string) {
+  async getModuleStateIn(moduleId: string, guild: Guild) {
     const module = modules.find((m) => m.id === moduleId);
     if (!module) {
       throw new Error(`Module with ID ${moduleId} not found`);
@@ -39,11 +39,11 @@ class ModuleService implements Service {
     const state = await prisma.moduleActivation.findFirst({
       where: {
         moduleId,
-        guildId,
+        guildId: guild.id,
       },
     });
 
-    return state || { moduleId, guildId, enabled: false };
+    return state ?? { moduleId, guildId: guild.id, activated: false };
   }
 
   async installModule(moduleId: string, guild: Guild) {
