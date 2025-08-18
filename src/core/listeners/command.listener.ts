@@ -1,8 +1,11 @@
-import type { AutocompleteInteraction, CommandInteraction } from "discord.js";
+import type {
+  AutocompleteInteraction,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { declareEventListener } from "../../lib/listener.js";
 import coreRegistry from "../core-registry.js";
 
-async function handleCommand(interaction: CommandInteraction) {
+async function handleCommand(interaction: ChatInputCommandInteraction) {
   const command = coreRegistry.commands.find(
     (cmd) => cmd.data.name === interaction.commandName
   );
@@ -33,7 +36,7 @@ async function handleComplete(interaction: AutocompleteInteraction) {
 export default declareEventListener({
   eventType: "interactionCreate",
   execute: async (interaction) => {
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
       await handleCommand(interaction);
     }
 

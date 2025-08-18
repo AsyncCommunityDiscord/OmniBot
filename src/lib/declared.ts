@@ -2,6 +2,7 @@ export enum DeclarationType {
   Module = "module",
   Command = "command",
   Listener = "listener",
+  Service = "service",
 }
 
 /**

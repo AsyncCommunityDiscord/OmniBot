@@ -1,6 +1,6 @@
 import type {
   AutocompleteInteraction,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   SlashCommandBuilder,
   SlashCommandOptionsOnlyBuilder,
   SlashCommandSubcommandBuilder,
@@ -28,7 +28,7 @@ export interface Command {
    *
    * @param interaction The interaction that triggered the command.
    */
-  execute: (interaction: CommandInteraction) => Promise<void>;
+  execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 
   /**
    * Optional function to handle autocomplete interactions for the command.
