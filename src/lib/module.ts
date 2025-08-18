@@ -1,6 +1,6 @@
 import { type Client, GatewayIntentBits, type Guild } from "discord.js";
-import type { Command } from "./command.js";
 import { DeclarationType, type Declared } from "./declared.js";
+import { Registry } from "./registry.js";
 
 export interface ModuleDeclaration {
   /**
@@ -38,7 +38,7 @@ export interface ModuleDeclaration {
    *
    * @param client The Discord client instance.
    */
-  onLoad: (client: Client, registry: ModuleRegistry) => void;
+  onLoad: (client: Client, registry: Registry) => void;
 
   /**
    * Called when the module is installed in a guild.
@@ -46,7 +46,7 @@ export interface ModuleDeclaration {
    * @param client The Discord client instance.
    * @param guild The guild where the module is being installed.
    */
-  onInstall: (client: Client, guild: Guild, registry: ModuleRegistry) => void;
+  onInstall: (client: Client, guild: Guild, registry: Registry) => void;
 
   /**
    * Called when the module is uninstalled from a guild.
@@ -54,7 +54,7 @@ export interface ModuleDeclaration {
    * @param client The Discord client instance.
    * @param guild The guild from which the module is being uninstalled.
    */
-  onUninstall: (client: Client, guild: Guild, registry: ModuleRegistry) => void;
+  onUninstall: (client: Client, guild: Guild, registry: Registry) => void;
 }
 
 /**
@@ -65,7 +65,7 @@ export interface Module extends ModuleDeclaration {
   /**
    * Registry for commands and other declarations made by the module.
    */
-  registry: ModuleRegistry;
+  registry: Registry;
 }
 
 /**
@@ -75,46 +75,7 @@ export interface Module extends ModuleDeclaration {
 export function defineModule(module: ModuleDeclaration): Declared<Module> {
   return {
     type: DeclarationType.Module,
-    registry: new ModuleRegistry(),
+    registry: new Registry(),
     ...module,
   };
-}
-
-/**
- * Represents the declarations made by a module.
- */
-export class ModuleRegistry {
-  /**
-   * An array of commands declared by the module.
-   * @private
-   */
-  private readonly _commands: Declared<Command>[];
-
-  /**
-   * Creates a new instance of the ModuleRegistry.
-   */
-  constructor() {
-    this._commands = [];
-  }
-
-  /**
-   * Retrieves all registered commands.
-   *
-   * @returns An array of registered commands.
-   */
-  get commands(): Declared<Command>[] {
-    return [...this._commands];
-  }
-
-  /**
-   * Registers a command with the module.
-   * @param command The command to register.
-   */
-  registerCommand(command: Declared<Command>): void {
-    if (command.type !== DeclarationType.Command) {
-      throw new Error("Invalid command declaration type");
-    }
-
-    this._commands.push(command);
-  }
 }

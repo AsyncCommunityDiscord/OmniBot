@@ -1,8 +1,9 @@
 import {
+  ButtonBuilder,
   ButtonStyle,
+  ContainerBuilder,
   InteractionContextType,
   MessageFlags,
-  SectionBuilder,
   SlashCommandBuilder,
 } from "discord.js";
 import { declareCommand } from "../../lib/command.js";
@@ -46,15 +47,17 @@ export default declareCommand({
 
     await interaction.reply({
       components: [
-        new SectionBuilder()
+        new ContainerBuilder()
           .addTextDisplayComponents((textDisplay) =>
             textDisplay.setContent("This is a module command response")
           )
-          .setButtonAccessory((button) =>
-            button
-              .setURL("https://google.com")
-              .setLabel("Google")
-              .setStyle(ButtonStyle.Link)
+          .addActionRowComponents((row) =>
+            row.addComponents(
+              new ButtonBuilder()
+                .setURL("https://google.com")
+                .setLabel("Google")
+                .setStyle(ButtonStyle.Link)
+            )
           ),
       ],
       flags: MessageFlags.IsComponentsV2,
