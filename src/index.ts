@@ -13,7 +13,7 @@ const client = new Client({
 
 client.once(Events.ClientReady, (readyClient) => {
   for (const module of modules) {
-    module.init(readyClient, module.registry);
+    module.onLoad(readyClient, module.registry);
 
     loadCommands(readyClient, module);
   }
