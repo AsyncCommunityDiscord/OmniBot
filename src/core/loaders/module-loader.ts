@@ -1,8 +1,8 @@
 import * as fs from "fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "path";
-import { DeclarationType, type Declared } from "../lib/declared.js";
-import type { Module } from "../lib/module.js";
+import { DeclarationType, type Declared } from "../../lib/declared.js";
+import type { Module } from "../../lib/module.js";
 
 const __dirname = path.resolve(fileURLToPath(import.meta.url), "..", "..");
 

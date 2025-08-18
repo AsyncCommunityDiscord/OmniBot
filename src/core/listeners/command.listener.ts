@@ -3,10 +3,10 @@ import type {
   ChatInputCommandInteraction,
 } from "discord.js";
 import { declareEventListener } from "../../lib/listener.js";
-import coreRegistry from "../core-registry.js";
+import coreModule from "../core.module.js";
 
 async function handleCommand(interaction: ChatInputCommandInteraction) {
-  const command = coreRegistry.commands.find(
+  const command = coreModule.registry.commands.find(
     (cmd) => cmd.data.name === interaction.commandName
   );
   if (!command) {
@@ -19,7 +19,7 @@ async function handleCommand(interaction: ChatInputCommandInteraction) {
 }
 
 async function handleComplete(interaction: AutocompleteInteraction) {
-  const command = coreRegistry.commands.find(
+  const command = coreModule.registry.commands.find(
     (cmd) => cmd.data.name === interaction.commandName
   );
   if (!command) {
