@@ -8,9 +8,9 @@ export default defineModule({
   description: "An example module for demonstration purposes.",
   version: "1.0.0",
   intents: [GatewayIntentBits.GuildVoiceStates],
-  init(_, registry) {
+  onLoad(_, registry) {
     registry.registerCommand(testCommand);
   },
-  install() {},
-  uninstall() {},
+  onInstall() {},
+  onUninstall() {},
 });

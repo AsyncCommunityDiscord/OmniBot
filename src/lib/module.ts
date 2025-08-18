@@ -38,7 +38,7 @@ export interface ModuleDeclaration {
    *
    * @param client The Discord client instance.
    */
-  init: (client: Client, registry: ModuleRegistry) => void;
+  onLoad: (client: Client, registry: ModuleRegistry) => void;
 
   /**
    * Called when the module is installed in a guild.
@@ -46,7 +46,7 @@ export interface ModuleDeclaration {
    * @param client The Discord client instance.
    * @param guild The guild where the module is being installed.
    */
-  install: (client: Client, guild: Guild, registry: ModuleRegistry) => void;
+  onInstall: (client: Client, guild: Guild, registry: ModuleRegistry) => void;
 
   /**
    * Called when the module is uninstalled from a guild.
@@ -54,7 +54,7 @@ export interface ModuleDeclaration {
    * @param client The Discord client instance.
    * @param guild The guild from which the module is being uninstalled.
    */
-  uninstall: (client: Client, guild: Guild, registry: ModuleRegistry) => void;
+  onUninstall: (client: Client, guild: Guild, registry: ModuleRegistry) => void;
 }
 
 /**
