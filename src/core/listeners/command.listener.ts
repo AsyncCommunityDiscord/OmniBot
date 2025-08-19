@@ -1,6 +1,7 @@
-import type {
-  AutocompleteInteraction,
-  ChatInputCommandInteraction,
+import {
+  type AutocompleteInteraction,
+  type ChatInputCommandInteraction,
+  MessageFlags,
 } from "discord.js";
 import { modules } from "../../index.js";
 import { declareEventListener } from "../../lib/listener.js";
@@ -43,7 +44,7 @@ async function handleCommand(interaction: ChatInputCommandInteraction) {
     );
     await interaction.reply({
       content: `The command \`${interaction.commandName}\` is not enabled in this guild.`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 }
