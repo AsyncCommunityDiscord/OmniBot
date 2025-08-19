@@ -5,7 +5,7 @@ import { DeclarationType, type Declared } from "../../lib/declared.js";
 import { loggerMaker } from "../../lib/logger.js";
 import type { Module } from "../../lib/module.js";
 
-const logger = loggerMaker("modulesr");
+const logger = loggerMaker("modules");
 
 const __dirname = path.resolve(
   fileURLToPath(import.meta.url),
