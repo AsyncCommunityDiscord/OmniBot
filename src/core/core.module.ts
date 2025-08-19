@@ -9,7 +9,7 @@ export default defineModule({
   name: "Core Module",
   description:
     "The core module of the application, managing core commands and events. It is always loaded.",
-  version: "1.0.0",
+  version: "1.1.1",
   intents: [],
   onLoad(_, registry) {
     // Register the core module's commands and events in the provided registry

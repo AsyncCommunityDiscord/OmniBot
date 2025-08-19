@@ -22,7 +22,7 @@ export const modulesMessage = (
       section
         .addTextDisplayComponents((text) =>
           text.setContent(
-            `${emoji} \`${state.module.name}\`\n> ${state.module.description}`
+            `${emoji} \`${state.module.name}\`${state.enabled ? ` (${state.enabledVersion})` : ""}\n> ${state.module.description}`
           )
         )
         .setButtonAccessory((button) =>

@@ -1,6 +1,7 @@
 import type { Guild } from "discord.js";
 import { client, modules } from "../../index.js";
 import prisma from "../../lib/database.js";
+import type { Module } from "../../lib/module.js";
 import { declareService, type Service } from "../../lib/service.js";
 
 class ModuleService implements Service {
@@ -14,10 +15,9 @@ class ModuleService implements Service {
     });
 
     return modules.map((module) => {
-      const activation =
-        moduleActivations.find(
-          (activation) => activation.moduleId === module.id
-        )?.activated ?? false;
+      const activation = moduleActivations.find(
+        (activation) => activation.moduleId === module.id
+      );
 
       return {
         module: {
@@ -25,7 +25,8 @@ class ModuleService implements Service {
           name: module.name,
           description: module.description,
         },
-        enabled: activation,
+        enabled: activation?.activated ?? false,
+        enabledVersion: activation?.activatedVersion,
       };
     });
   }
@@ -50,7 +51,29 @@ class ModuleService implements Service {
     return state ?? { moduleId, guildId, activated: false };
   }
 
-  async installModule(moduleId: string, guild: Guild) {
+  async getGuildsWhereVersionDoesNotMatch(module: Module, version: string) {
+    const activations = await prisma.moduleActivation.findMany({
+      select: {
+        guildId: true,
+        activatedVersion: true,
+      },
+      where: {
+        moduleId: module.id,
+        activated: true,
+        activatedVersion: {
+          not: version,
+        },
+      },
+    });
+
+    return activations.map((activation) => ({
+      guildId: activation.guildId,
+      currentVersion: activation.activatedVersion,
+      expectedVersion: version,
+    }));
+  }
+
+  async enableModule(moduleId: string, guild: Guild) {
     const module = modules.find((m) => m.id === moduleId);
     if (!module) {
       throw new Error(`Module with ID ${moduleId} not found`);
@@ -68,9 +91,11 @@ class ModuleService implements Service {
         moduleId,
         guildId: guild.id,
         activated: true,
+        activatedVersion: module.version,
       },
       update: {
         activated: true,
+        activatedVersion: module.version,
       },
     });
 
@@ -79,7 +104,7 @@ class ModuleService implements Service {
     return activation;
   }
 
-  async uninstallModule(moduleId: string, guild: Guild) {
+  async disableModule(moduleId: string, guild: Guild) {
     const module = modules.find((m) => m.id === moduleId);
     if (!module) {
       throw new Error(`Module with ID ${moduleId} not found`);
@@ -96,15 +121,35 @@ class ModuleService implements Service {
         moduleId,
         guildId: guild.id,
         activated: false,
+        activatedVersion: "",
       },
       update: {
         activated: false,
+        activatedVersion: "",
       },
     });
 
     module.onUninstall?.(client, guild, module.registry);
 
     return activation;
+  }
+
+  async updateModuleActivation(
+    moduleId: string,
+    guildId: string,
+    version: string
+  ) {
+    await prisma.moduleActivation.update({
+      where: {
+        moduleId_guildId: {
+          moduleId,
+          guildId,
+        },
+      },
+      data: {
+        activatedVersion: version,
+      },
+    });
   }
 }
 
