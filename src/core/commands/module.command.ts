@@ -6,6 +6,7 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 import { declareCommand } from "../../lib/command.js";
+import logger from "../../lib/logger.js";
 import { Colors } from "../../utils/colors.js";
 import { installModule, uninstallModule } from "../loaders/module-installer.js";
 import moduleService from "../services/module.service.js";
@@ -65,7 +66,7 @@ async function enableModule(interaction: ChatInputCommandInteraction) {
       flags: MessageFlags.Ephemeral,
     });
   } catch (error) {
-    console.error("Error installing module:", error);
+    logger.error(`Error installing module | error = ${error}`);
     await interaction.reply({
       content: `Failed to install module "${moduleName}". Please check the logs for more details.`,
       flags: MessageFlags.Ephemeral,
@@ -94,7 +95,7 @@ async function disableModule(interaction: ChatInputCommandInteraction) {
       flags: MessageFlags.Ephemeral,
     });
   } catch (error) {
-    console.error("Error uninstalling module:", error);
+    logger.error(`Error uninstalling module | error = ${error}`);
     await interaction.reply({
       content: `Failed to uninstall module "${moduleName}". Please check the logs for more details.`,
       flags: MessageFlags.Ephemeral,
@@ -137,8 +138,6 @@ export default declareCommand({
     .setContexts([InteractionContextType.Guild]),
 
   async execute(interaction) {
-    console.log("Module command executed:", interaction.commandName);
-
     switch (interaction.options.getSubcommand()) {
       case "list":
         await moduleList(interaction);
@@ -158,8 +157,6 @@ export default declareCommand({
   },
 
   async complete(interaction) {
-    console.log("Module command autocomplete:", interaction.commandName);
-
     const modules = moduleService.getAllModules();
 
     await interaction.respond(
