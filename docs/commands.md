@@ -1,10 +1,8 @@
 # Commandes Discord
 
 Ce guide explique comment créer des commandes Discord dans vos modules.
-
-> ⚠️ **Important**: Pour les commandes pouvant être exécutées en MP (messages privés), vous devez gérer manuellement la
-> vérification d'activation du module car le système ne peut pas détecter automatiquement si le module est actif en
-> dehors d'un serveur.
+Ces commandes sont des interactions slash qui permettent aux utilisateurs d'interagir avec votre bot. Elles ne seront
+disponibles que si le module est activé, et sur le serveur.
 
 ## Structure des Commandes
 
