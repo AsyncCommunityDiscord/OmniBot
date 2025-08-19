@@ -2,7 +2,7 @@ import type { ClientEvents } from "discord.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 /**
- * Represents a command
+ * Represents a listener
  */
 export interface EventListener<T extends keyof ClientEvents> {
   /**
