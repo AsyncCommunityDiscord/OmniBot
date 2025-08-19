@@ -3,7 +3,7 @@ import logger from "../../../lib/logger.js";
 
 export default declareEventListener({
   eventType: "messageCreate",
-  async execute(...args) {
-    logger.debug(args);
+  async execute(message) {
+    logger.debug(`Message received: ${message.content}`);
   },
 });

@@ -9,7 +9,11 @@ export default defineModule({
   name: "Example Module",
   description: "An example module for demonstration purposes.",
   version: "1.0.0",
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
   onLoad(_, registry) {
     registry.registerCommand(testCommand);
     registry.registerEventListener(messageListener);
