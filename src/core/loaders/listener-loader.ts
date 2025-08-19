@@ -1,8 +1,10 @@
 import { type Client } from "discord.js";
-import logger from "../../lib/logger.js";
+import { loggerMaker } from "../../lib/logger.js";
 import type { Module } from "../../lib/module.js";
 import coreModule from "../core.module.js";
 import moduleService from "../services/module.service.js";
+
+const logger = loggerMaker("listeners");
 
 /**
  * Loads global listeners from the core registry and registers them with Discord.

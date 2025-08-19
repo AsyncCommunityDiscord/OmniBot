@@ -1,7 +1,9 @@
 import { type Client, type Guild, REST, Routes } from "discord.js";
-import logger from "../../lib/logger.js";
+import { loggerMaker } from "../../lib/logger.js";
 import type { Module } from "../../lib/module.js";
 import coreModule from "../core.module.js";
+
+const logger = loggerMaker("commands");
 
 /**
  * Loads global commands from the core registry and registers them with Discord.
@@ -21,6 +23,9 @@ export function loadGlobalCommands(client: Client) {
       body: coreCommands,
     })
     .then(() => {
+      coreCommands.forEach((command) => {
+        logger.info(`\tRegistering command | name = ${command.name}`);
+      });
       logger.info(
         `Successfully loaded global commands | count = ${coreCommands.length}`
       );
@@ -46,11 +51,16 @@ export async function installModuleCommandsIn(
   const rest = new REST().setToken(client.token!);
 
   try {
-    const createPromises = commands.map((command) =>
-      rest.post(Routes.applicationGuildCommands(client.user!.id, guild.id), {
-        body: command,
-      })
-    );
+    const createPromises = commands.map((command) => {
+      logger.info(`\tCreating command | name = ${command.name}`);
+
+      return rest.post(
+        Routes.applicationGuildCommands(client.user!.id, guild.id),
+        {
+          body: command,
+        }
+      );
+    });
 
     await Promise.all(createPromises);
 
@@ -82,9 +92,10 @@ export async function uninstallModuleCommandsIn(
       moduleCommands.includes(cmd.name)
     );
 
-    const deletePromises = commandsToDelete.map((cmd) =>
-      guild.commands.delete(cmd.id)
-    );
+    const deletePromises = commandsToDelete.map((cmd) => {
+      logger.info(`\tDeleting command | name = ${cmd.name}`);
+      return guild.commands.delete(cmd.id);
+    });
 
     await Promise.all(deletePromises);
 
