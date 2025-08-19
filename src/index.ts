@@ -1,6 +1,9 @@
 import { Client, Events } from "discord.js";
 import coreModule from "./core/core.module.js";
-import { loadGlobalCommands } from "./core/loaders/command-loader.js";
+import {
+  checkCommandsForVersionChange,
+  loadGlobalCommands,
+} from "./core/loaders/command-loader.js";
 import {
   loadGlobalEvents,
   loadModuleEvents,
@@ -16,10 +19,11 @@ export const client = new Client({
   intents: intents,
 });
 
-client.once(Events.ClientReady, (readyClient) => {
+client.once(Events.ClientReady, async (readyClient) => {
   for (const module of modules) {
     module.onLoad(readyClient, module.registry);
     loadModuleEvents(readyClient, module);
+    await checkCommandsForVersionChange(readyClient, module);
   }
 
   coreModule.onLoad(readyClient, coreModule.registry);

@@ -20,7 +20,7 @@ export async function installModule(module: Module, guild: Guild) {
   await installModuleCommandsIn(client, module, guild);
 
   // Change the module state in the database
-  await moduleService.installModule(module.id, guild);
+  await moduleService.enableModule(module.id, guild);
 }
 
 export async function uninstallModule(module: Module, guild: Guild) {
@@ -35,5 +35,5 @@ export async function uninstallModule(module: Module, guild: Guild) {
   await uninstallModuleCommandsIn(client, module, guild);
 
   // Change the module state in the database
-  await moduleService.uninstallModule(module.id, guild);
+  await moduleService.disableModule(module.id, guild);
 }

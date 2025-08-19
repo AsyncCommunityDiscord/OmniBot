@@ -2,7 +2,8 @@ model ModuleActivation {
   moduleId String
   guildId  String
 
-  activated Boolean
+  activated        Boolean
+  activatedVersion String  @default("")
 
   @@id([moduleId, guildId])
 }

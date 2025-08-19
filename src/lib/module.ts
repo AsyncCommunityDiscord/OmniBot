@@ -1,6 +1,7 @@
 import { type Client, GatewayIntentBits, type Guild } from "discord.js";
 import { DeclarationType, type Declared } from "./declared.js";
 import { Registry } from "./registry.js";
+import type { Version } from "./version.js";
 
 export interface ModuleDeclaration {
   /**
@@ -21,7 +22,7 @@ export interface ModuleDeclaration {
   /**
    * Version of the module.
    */
-  version: string;
+  version: Version;
 
   /**
    * Optional author of the module.
