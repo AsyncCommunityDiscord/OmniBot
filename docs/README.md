@@ -8,6 +8,7 @@ commandes et listeners pour étendre les fonctionnalités du bot Discord.
 - [**Modules**](modules.md) - Comment créer et structurer un module
 - [**Commandes**](commands.md) - Comment créer des commandes slash
 - [**Listeners**](listeners.md) - Comment écouter et réagir aux événements Discord
+- [**Services**](services.md) - Comment créer des services pour la logique métier
 - [**Prisma**](prisma.md) - Guide sur l'utilisation de Prisma pour la base de données
 
 ## Architecture du Projet
