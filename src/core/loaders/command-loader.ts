@@ -175,7 +175,7 @@ export async function checkCommandsForVersionChange(
     );
     logger.info(
       `\tSuccessfully updated commands in guild "${guild.id}" for module "${module.id}
-      " | new version = ${module.version}`
+      `\tSuccessfully updated commands in guild "${guild.id}" for module "${module.id}" | new version = ${module.version}`
     );
   }
 
