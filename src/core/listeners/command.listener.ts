@@ -3,6 +3,7 @@ import type {
   ChatInputCommandInteraction,
 } from "discord.js";
 import { declareEventListener } from "../../lib/listener.js";
+import logger from "../../lib/logger.js";
 import coreModule from "../core.module.js";
 
 async function handleCommand(interaction: ChatInputCommandInteraction) {
@@ -10,11 +11,11 @@ async function handleCommand(interaction: ChatInputCommandInteraction) {
     (cmd) => cmd.data.name === interaction.commandName
   );
   if (!command) {
-    console.warn(`Command not found: ${interaction.commandName}`);
+    logger.warn(`Command not found | name = ${interaction.commandName}`);
     return;
   }
 
-  console.log(`Executing command: ${interaction.commandName}`);
+  logger.debug(`Executing command | name = ${interaction.commandName}`);
   await command.execute(interaction);
 }
 
@@ -23,13 +24,13 @@ async function handleComplete(interaction: AutocompleteInteraction) {
     (cmd) => cmd.data.name === interaction.commandName
   );
   if (!command) {
-    console.warn(
-      `Command not found for autocomplete: ${interaction.commandName}`
+    logger.warn(
+      `Command not found for autocomplete | name = ${interaction.commandName}`
     );
     return;
   }
 
-  console.log(`Handling autocomplete for command: ${interaction.commandName}`);
+  logger.debug(`Handling autocomplete | name = ${interaction.commandName}`);
   await command.complete?.(interaction);
 }
 

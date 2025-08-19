@@ -1,4 +1,5 @@
 import { type Client, type Guild, REST, Routes } from "discord.js";
+import logger from "../../lib/logger.js";
 import type { Module } from "../../lib/module.js";
 import coreModule from "../core.module.js";
 
@@ -8,6 +9,8 @@ import coreModule from "../core.module.js";
  * @param client The Discord client instance used to register the commands.
  */
 export function loadGlobalCommands(client: Client) {
+  logger.info("Loading global commands");
+
   const coreCommands = coreModule.registry.commands.map((command) =>
     command.data.toJSON()
   );
@@ -18,12 +21,12 @@ export function loadGlobalCommands(client: Client) {
       body: coreCommands,
     })
     .then(() => {
-      console.log(
-        `Successfully loaded commands from core registry | count = ${coreCommands.length}`
+      logger.info(
+        `Successfully loaded global commands commands | count = ${coreCommands.length}`
       );
     })
     .catch((error) => {
-      console.error(`Failed to load commands | error = `, error);
+      logger.error(`Failed to load commands | error = ${error}`);
     });
 }
 
@@ -32,6 +35,10 @@ export async function installModuleCommandsIn(
   module: Module,
   guild: Guild
 ) {
+  logger.info(
+    `Installing module commands for "${module.id}" in guild "${guild.id}"`
+  );
+
   const commands = module.registry.commands.map((command) =>
     command.data.toJSON()
   );
@@ -47,12 +54,12 @@ export async function installModuleCommandsIn(
 
     await Promise.all(createPromises);
 
-    console.log(
-      `Successfully loaded commands for module "${module.id}" in guild "${guild.name}" | count = ${commands.length}`
+    logger.info(
+      `Successfully loaded commands for module "${module.id}" in guild "${guild.id}" | count = ${commands.length}`
     );
   } catch (error) {
-    console.error(
-      `Failed to load commands for module "${module.id}" in guild "${guild.name}" | error = `,
+    logger.error(
+      `Failed to load commands for module "${module.id}" in guild "${guild.id}" | error = `,
       error
     );
   }
@@ -63,6 +70,10 @@ export async function uninstallModuleCommandsIn(
   module: Module,
   guild: Guild
 ) {
+  logger.info(
+    `Uninstalling module commands for "${module.id}" in guild "${guild.id}"`
+  );
+
   try {
     const commands = await guild.commands.fetch();
 
@@ -77,12 +88,12 @@ export async function uninstallModuleCommandsIn(
 
     await Promise.all(deletePromises);
 
-    console.log(
-      `Successfully uninstalled commands for module "${module.id}" in guild "${guild.name}"`
+    logger.info(
+      `Successfully uninstalled commands for module "${module.id}" in guild "${guild.id}"`
     );
   } catch (error) {
-    console.error(
-      `Failed to uninstall commands for module "${module.id}" in guild "${guild.name}" | error = `,
+    logger.error(
+      `Failed to uninstall commands for module "${module.id}" in guild "${guild.id}" | error = `,
       error
     );
   }
