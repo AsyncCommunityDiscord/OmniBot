@@ -22,7 +22,7 @@ export function loadGlobalCommands(client: Client) {
     })
     .then(() => {
       logger.info(
-        `Successfully loaded global commands commands | count = ${coreCommands.length}`
+        `Successfully loaded global commands | count = ${coreCommands.length}`
       );
     })
     .catch((error) => {
