@@ -1,4 +1,5 @@
 import { GatewayIntentBits } from "discord.js";
+import logger from "../../lib/logger.js";
 import { defineModule } from "../../lib/module.js";
 import testCommand from "./commands/test.command.js";
 
@@ -12,9 +13,9 @@ export default defineModule({
     registry.registerCommand(testCommand);
   },
   onInstall(_, guild) {
-    console.log("Example module installed in guild", guild.name);
+    logger.debug(`Example module installed | guild = ${guild.name}`);
   },
   onUninstall(_, guild) {
-    console.log("Example module uninstalled in guild", guild.name);
+    logger.debug(`Example module uninstalled | guild = ${guild.name}`);
   },
 });
