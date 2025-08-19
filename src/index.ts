@@ -1,7 +1,10 @@
 import { Client, Events } from "discord.js";
 import coreModule from "./core/core.module.js";
 import { loadGlobalCommands } from "./core/loaders/command-loader.js";
-import { loadGlobalEvents } from "./core/loaders/listener-loader.js";
+import {
+  loadGlobalEvents,
+  loadModuleEvents,
+} from "./core/loaders/listener-loader.js";
 import { loadModules } from "./core/loaders/module-loader.js";
 
 const token = process.env["DISCORD_TOKEN"];
@@ -16,6 +19,7 @@ export const client = new Client({
 client.once(Events.ClientReady, (readyClient) => {
   for (const module of modules) {
     module.onLoad(readyClient, module.registry);
+    loadModuleEvents(readyClient, module);
   }
 
   coreModule.onLoad(readyClient, coreModule.registry);
