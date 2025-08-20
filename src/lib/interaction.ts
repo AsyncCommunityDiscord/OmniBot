@@ -1,15 +1,15 @@
-import type { Interaction } from "discord.js";
+import type { MessageComponentInteraction } from "discord.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
-export interface InteractionHandler<T extends Interaction> {
+export interface InteractionHandler<T extends MessageComponentInteraction> {
   customId: string;
-  check: (interaction: Interaction) => interaction is T;
+  check: (interaction: MessageComponentInteraction) => interaction is T;
   execute: (interaction: T, args: string[]) => Promise<void>;
 }
 
-export function declareInteractionHandler<T extends Interaction>(
-  handler: InteractionHandler<T>
-): Declared<InteractionHandler<T>> {
+export function declareInteractionHandler<
+  T extends MessageComponentInteraction,
+>(handler: InteractionHandler<T>): Declared<InteractionHandler<T>> {
   return {
     type: DeclarationType.Interaction,
     ...handler,

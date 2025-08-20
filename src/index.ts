@@ -9,6 +9,18 @@ import {
   loadModuleEvents,
 } from "./core/loaders/listener-loader.js";
 import { loadModules } from "./core/loaders/module-loader.js";
+import prisma, { Prisma } from "./lib/database.js";
+import logger from "./lib/logger.js";
+import sql = Prisma.sql;
+
+try {
+  await prisma.$queryRaw<number>(sql`SELECT 1`);
+} catch {
+  logger.error(
+    "Failed to connect to the database. Please check your configuration or start the database."
+  );
+  process.exit(1);
+}
 
 const token = process.env["DISCORD_TOKEN"];
 

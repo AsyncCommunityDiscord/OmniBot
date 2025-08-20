@@ -9,7 +9,7 @@ export default declareInteractionHandler({
   customId: "disable-module",
   check: (interaction) => interaction.isButton(),
   async execute(interaction, args) {
-    const moduleId = args[1];
+    const moduleId = args[0];
     if (!moduleId) {
       await interaction.reply({
         content: "The button is malformed. Please try again later.",

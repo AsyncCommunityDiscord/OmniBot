@@ -1,6 +1,7 @@
 import {
   type AutocompleteInteraction,
   type ChatInputCommandInteraction,
+  type MessageComponentInteraction,
   MessageFlags,
 } from "discord.js";
 import { modules } from "../../index.js";
@@ -64,15 +65,59 @@ async function handleComplete(interaction: AutocompleteInteraction) {
   await command.complete?.(interaction);
 }
 
+async function handleInteraction(interaction: MessageComponentInteraction) {
+  const allModules = [...modules, coreModule];
+  const [id, ...args] = interaction.customId.split(":");
+
+  if (!id) {
+    logger.warn(
+      `Invalid interaction customId | customId = ${interaction.customId}`
+    );
+    return;
+  }
+
+  const handler = allModules
+    .flatMap((module) =>
+      module.registry.interactionHandlers.map((handler) => ({
+        module: module,
+        handler: handler,
+      }))
+    )
+    .find((handler) => handler.handler.customId === id);
+
+  if (!handler) {
+    logger.warn(
+      `Interaction handler not found | customId = ${interaction.customId}`
+    );
+    return;
+  }
+
+  if (
+    handler.module.id === coreModule.id ||
+    (await moduleService.getModuleStateIn(module.id, interaction.guild!))
+      .activated
+  ) {
+    if (!handler.handler.check(interaction)) return;
+
+    await handler.handler.execute(interaction, args);
+  }
+}
+
 export default declareEventListener({
   eventType: "interactionCreate",
   execute: async (interaction) => {
     if (interaction.isChatInputCommand()) {
       await handleCommand(interaction);
+      return;
     }
 
     if (interaction.isAutocomplete()) {
       await handleComplete(interaction);
+      return;
+    }
+
+    if (interaction.isMessageComponent()) {
+      await handleInteraction(interaction);
     }
   },
 });
