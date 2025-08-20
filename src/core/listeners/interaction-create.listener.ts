@@ -1,10 +1,10 @@
 import {
   type AutocompleteInteraction,
   type ChatInputCommandInteraction,
-  type MessageComponentInteraction,
   MessageFlags,
 } from "discord.js";
 import { modules } from "../../index.js";
+import type { CompatibleInteraction } from "../../lib/interaction.js";
 import { declareEventListener } from "../../lib/listener.js";
 import logger from "../../lib/logger.js";
 import coreModule from "../core.module.js";
@@ -65,7 +65,7 @@ async function handleComplete(interaction: AutocompleteInteraction) {
   await command.complete?.(interaction);
 }
 
-async function handleInteraction(interaction: MessageComponentInteraction) {
+async function handleInteraction(interaction: CompatibleInteraction) {
   const allModules = [...modules, coreModule];
   const [id, ...args] = interaction.customId.split(":");
 
@@ -116,7 +116,7 @@ export default declareEventListener({
       return;
     }
 
-    if (interaction.isMessageComponent()) {
+    if (interaction.isMessageComponent() || interaction.isModalSubmit()) {
       await handleInteraction(interaction);
     }
   },
