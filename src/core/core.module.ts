@@ -2,7 +2,7 @@ import { defineModule } from "../lib/module.js";
 import moduleCommand from "./commands/module.command.js";
 import disableModuleButton from "./interactions/disable-module.button.js";
 import enableModuleButton from "./interactions/enable-module.button.js";
-import commandListener from "./listeners/command.listener.js";
+import commandListener from "./listeners/interaction-create.listener.js";
 
 export default defineModule({
   id: "core",
