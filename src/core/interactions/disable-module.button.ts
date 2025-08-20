@@ -1,17 +1,15 @@
 import { MessageFlags } from "discord.js";
 import { modules } from "../../index.js";
-import { declareEventListener } from "../../lib/listener.js";
+import { declareInteractionHandler } from "../../lib/interaction.js";
 import { uninstallModule } from "../loaders/module-installer.js";
 import moduleService from "../services/module.service.js";
 import { modulesMessage } from "../utils/core-messages.js";
 
-export default declareEventListener({
-  eventType: "interactionCreate",
-  async execute(interaction) {
-    if (!interaction.isButton()) return;
-    if (!interaction.customId.startsWith("disable-module")) return;
-
-    const moduleId = interaction.customId.split(":")[1];
+export default declareInteractionHandler({
+  customId: "disable-module",
+  check: (interaction) => interaction.isButton(),
+  async execute(interaction, args) {
+    const moduleId = args[1];
     if (!moduleId) {
       await interaction.reply({
         content: "The button is malformed. Please try again later.",

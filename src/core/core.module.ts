@@ -15,8 +15,9 @@ export default defineModule({
     // Register the core module's commands and events in the provided registry
     registry.registerCommand(moduleCommand);
     registry.registerEventListener(commandListener);
-    registry.registerEventListener(enableModuleButton);
-    registry.registerEventListener(disableModuleButton);
+
+    registry.registerInteractionHandler(enableModuleButton);
+    registry.registerInteractionHandler(disableModuleButton);
   },
   onInstall() {
     throw new Error("Core module cannot be installed or uninstalled.");
