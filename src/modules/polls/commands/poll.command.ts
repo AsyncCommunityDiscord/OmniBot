@@ -16,11 +16,11 @@ export default declareCommand({
     );
 
     logger.debug("Creating poll edition message");
-    const containerBuilder = pollEditionMessage(pollData);
+    const editionMessage = pollEditionMessage(pollData);
     logger.debug("Container builder created for poll edition");
 
     await interaction.reply({
-      components: [containerBuilder],
+      components: editionMessage,
       flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
     });
   },

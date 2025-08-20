@@ -13,7 +13,8 @@ import type { PollData, PollOption } from "../data/poll.js";
 
 export function pollEditionMessage(
   data: PollData,
-  editOptionIndex: number | null = null
+  editOptionIndex: number | null = null,
+  confirmDelete: boolean = false
 ) {
   const question = data.question ?? "*Aucun titre défini*";
 
@@ -35,32 +36,58 @@ export function pollEditionMessage(
       .setButtonAccessory(
         new ButtonBuilder()
           .setCustomId("edit-poll-question")
-          .setLabel("Edit question")
-          .setStyle(ButtonStyle.Primary)
+          .setLabel("Edit")
+          .setStyle(ButtonStyle.Secondary)
       )
   );
 
   builder.addTextDisplayComponents((options) => options.setContent("## ** **"));
 
   builder.addSeparatorComponents((separator) => separator);
-  builder.components.push(...pollOptions(data.options, editOptionIndex));
+  builder.components.push(
+    ...pollOptions(data.options, editOptionIndex, confirmDelete)
+  );
 
   builder.addSeparatorComponents((separator) => separator);
   builder.addActionRowComponents((row) =>
     row.addComponents(
       new ButtonBuilder()
         .setCustomId("add-poll-option")
+        .setEmoji("➕")
         .setLabel("Add option")
-        .setStyle(ButtonStyle.Success)
+        .setStyle(ButtonStyle.Primary)
     )
   );
 
-  return builder;
+  const components = [builder];
+  if (confirmDelete) {
+    components.push(
+      new ContainerBuilder()
+        .addTextDisplayComponents((warning) =>
+          warning.setContent("Are you sure you want to delete this option?")
+        )
+        .addActionRowComponents((row) =>
+          row.addComponents(
+            new ButtonBuilder()
+              .setCustomId(`delete-poll-option-confirm:${editOptionIndex}`)
+              .setLabel("Confirm")
+              .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+              .setCustomId("edit-poll-option")
+              .setLabel("Cancel")
+              .setStyle(ButtonStyle.Secondary)
+          )
+        )
+    );
+  }
+
+  return components;
 }
 
 export function pollOptions(
   options: PollOption[],
-  editOptionIndex: number | null = null
+  editOptionIndex: number | null = null,
+  confirmDelete: boolean = false
 ) {
   logger.debug(
     `Generating poll options display | options = ${JSON.stringify(options)}`
@@ -72,39 +99,53 @@ export function pollOptions(
   }
 
   for (const [index, option] of options.entries()) {
-    sections.push(
-      new SectionBuilder()
-        .addTextDisplayComponents((text) =>
-          text.setContent(
-            `### ${option.emoji ? `${option.emoji}   ` : ""}${option.description}`
-          )
-        )
-        .setButtonAccessory(
-          new ButtonBuilder()
-            .setCustomId(`edit-poll-option:${index}`)
-            .setLabel("Edit option")
-            .setStyle(ButtonStyle.Secondary)
-        )
-    );
-
-    logger.debug(
-      `Edit option index: ${editOptionIndex}, Current index: ${index}`
-    );
-    if (editOptionIndex === index) {
+    if (editOptionIndex !== index) {
       sections.push(
+        new SectionBuilder()
+          .addTextDisplayComponents((text) =>
+            text.setContent(
+              `### ${option.emoji ? `${option.emoji}   ` : ""}${option.description}`
+            )
+          )
+          .setButtonAccessory(
+            new ButtonBuilder()
+              .setCustomId(`edit-poll-option:${index}`)
+              .setLabel("Edit")
+              .setStyle(ButtonStyle.Secondary)
+          )
+      );
+    } else {
+      sections.push(
+        new SectionBuilder()
+          .addTextDisplayComponents((text) =>
+            text.setContent(
+              `### ${option.emoji ? `${option.emoji}   ` : ""}${option.description}`
+            )
+          )
+          .setButtonAccessory(
+            new ButtonBuilder()
+              .setCustomId("cancel-edit-option")
+              .setLabel("Cancel")
+              .setStyle(ButtonStyle.Secondary)
+          ),
         new ActionRowBuilder().addComponents(
           new ButtonBuilder()
+            .setCustomId(`move-poll-option-up:${index}`)
+            .setEmoji("⬆️")
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
+            .setCustomId(`move-poll-option-down:${index}`)
+            .setEmoji("⬇️")
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
             .setCustomId(`rename-poll-option:${index}`)
-            .setLabel("Rename")
+            .setEmoji("✏️")
             .setStyle(ButtonStyle.Primary),
           new ButtonBuilder()
             .setCustomId(`delete-poll-option:${index}`)
-            .setLabel("Delete")
-            .setStyle(ButtonStyle.Danger),
-          new ButtonBuilder()
-            .setCustomId("cancel-edit-option")
-            .setLabel("Cancel")
-            .setStyle(ButtonStyle.Secondary)
+            .setEmoji("🗑️")
+            .setDisabled(confirmDelete)
+            .setStyle(ButtonStyle.Danger)
         )
       );
     }

@@ -50,7 +50,7 @@ class PollCreationService {
     logger.debug(
       `Editing poll for user ${user.id} | pollData: ${JSON.stringify(pollData)}`
     );
-    const updatedPollData = updater(pollData);
+    const updatedPollData = updater({ ...pollData });
     logger.debug(
       `Updated poll data for user ${user.id} | newPollData: ${JSON.stringify(updatedPollData)}`
     );
