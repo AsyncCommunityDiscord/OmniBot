@@ -13,7 +13,7 @@ export default declareInteractionHandler({
     if (!moduleId) {
       await interaction.reply({
         content: "The button is malformed. Please try again later.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
