@@ -2,7 +2,7 @@ import { defineModule } from "../lib/module.js";
 import moduleCommand from "./commands/module.command.js";
 import disableModuleButton from "./interactions/disable-module.button.js";
 import enableModuleButton from "./interactions/enable-module.button.js";
-import commandListener from "./listeners/command.listener.js";
+import commandListener from "./listeners/interaction-create.listener.js";
 
 export default defineModule({
   id: "core",
@@ -15,8 +15,9 @@ export default defineModule({
     // Register the core module's commands and events in the provided registry
     registry.registerCommand(moduleCommand);
     registry.registerEventListener(commandListener);
-    registry.registerEventListener(enableModuleButton);
-    registry.registerEventListener(disableModuleButton);
+
+    registry.registerInteractionHandler(enableModuleButton);
+    registry.registerInteractionHandler(disableModuleButton);
   },
   onInstall() {
     throw new Error("Core module cannot be installed or uninstalled.");

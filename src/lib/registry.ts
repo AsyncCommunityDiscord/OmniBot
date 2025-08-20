@@ -1,5 +1,6 @@
 import type { Command } from "./command.js";
 import { DeclarationType, type Declared } from "./declared.js";
+import type { InteractionHandler } from "./interaction.js";
 import type { EventListener } from "./listener.js";
 
 /**
@@ -19,11 +20,19 @@ export class Registry {
   private readonly _listeners: Declared<EventListener<any>>[] = [];
 
   /**
+   * An array of interaction handlers declared by the module.
+   * @private
+   */
+  private readonly _interactionHandlers: Declared<InteractionHandler<any>>[] =
+    [];
+
+  /**
    * Creates a new instance of the ModuleRegistry.
    */
   constructor() {
     this._commands = [];
     this._listeners = [];
+    this._interactionHandlers = [];
   }
 
   /**
@@ -42,6 +51,15 @@ export class Registry {
    */
   get listeners(): Declared<EventListener<any>>[] {
     return [...this._listeners];
+  }
+
+  /**
+   * Retrieves all registered interaction handlers.
+   *
+   * @returns An array of registered interaction handlers.
+   */
+  get interactionHandlers(): Declared<InteractionHandler<any>>[] {
+    return [...this._interactionHandlers];
   }
 
   /**
@@ -66,5 +84,15 @@ export class Registry {
     }
 
     this._listeners.push(listener);
+  }
+
+  registerInteractionHandler(
+    interactionHandle: Declared<InteractionHandler<any>>
+  ) {
+    if (interactionHandle.type !== DeclarationType.Interaction) {
+      throw new Error("Invalid interaction handler declaration type");
+    }
+
+    this._interactionHandlers.push(interactionHandle);
   }
 }
