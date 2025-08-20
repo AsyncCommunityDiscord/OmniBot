@@ -94,7 +94,7 @@ async function handleInteraction(interaction: CompatibleInteraction) {
 
   if (
     handler.module.id === coreModule.id ||
-    (await moduleService.getModuleStateIn(module.id, interaction.guild!))
+    (await moduleService.getModuleStateIn(handler.module.id, interaction.guild!))
       .activated
   ) {
     if (!handler.handler.check(interaction)) return;
