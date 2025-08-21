@@ -10,6 +10,14 @@ import {
 import logger from "../../../lib/logger.js";
 import { Colors } from "../../../utils/colors.js";
 import type { PollData, PollOption } from "../data/poll.js";
+import {
+  addIcon,
+  deleteIcon,
+  moveDownIcon,
+  moveUpIcon,
+  okIcon,
+  renameIcon,
+} from "./poll.icons.js";
 
 export function pollEditionMessage(
   data: PollData,
@@ -36,7 +44,7 @@ export function pollEditionMessage(
       .setButtonAccessory(
         new ButtonBuilder()
           .setCustomId("edit-poll-question")
-          .setLabel("Edit")
+          .setEmoji(renameIcon)
           .setStyle(ButtonStyle.Secondary)
       )
   );
@@ -53,7 +61,7 @@ export function pollEditionMessage(
     row.addComponents(
       new ButtonBuilder()
         .setCustomId("add-poll-option")
-        .setEmoji("➕")
+        .setEmoji(addIcon)
         .setLabel("Add option")
         .setStyle(ButtonStyle.Primary)
     )
@@ -104,13 +112,13 @@ export function pollOptions(
         new SectionBuilder()
           .addTextDisplayComponents((text) =>
             text.setContent(
-              `### ${option.emoji ? `${option.emoji}   ` : ""}${option.description}`
+              `### ${option.emoji ?? numberAsEmoji(index + 1)}   ${option.description}`
             )
           )
           .setButtonAccessory(
             new ButtonBuilder()
               .setCustomId(`edit-poll-option:${index}`)
-              .setLabel("Edit")
+              .setEmoji(renameIcon)
               .setStyle(ButtonStyle.Secondary)
           )
       );
@@ -119,31 +127,33 @@ export function pollOptions(
         new SectionBuilder()
           .addTextDisplayComponents((text) =>
             text.setContent(
-              `### ${option.emoji ? `${option.emoji}   ` : ""}${option.description}`
+              `### ${option.emoji ?? numberAsEmoji(index + 1)}   ${option.description}`
             )
           )
           .setButtonAccessory(
             new ButtonBuilder()
               .setCustomId("cancel-edit-option")
-              .setLabel("Cancel")
-              .setStyle(ButtonStyle.Secondary)
+              .setEmoji(okIcon)
+              .setStyle(ButtonStyle.Success)
           ),
         new ActionRowBuilder().addComponents(
           new ButtonBuilder()
-            .setCustomId(`move-poll-option-up:${index}`)
-            .setEmoji("⬆️")
+            .setCustomId(`move-poll-option:${index}:up`)
+            .setEmoji(moveUpIcon)
+            .setDisabled(index === 0)
             .setStyle(ButtonStyle.Secondary),
           new ButtonBuilder()
-            .setCustomId(`move-poll-option-down:${index}`)
-            .setEmoji("⬇️")
+            .setCustomId(`move-poll-option:${index}:down`)
+            .setEmoji(moveDownIcon)
+            .setDisabled(index === options.length - 1)
             .setStyle(ButtonStyle.Secondary),
           new ButtonBuilder()
             .setCustomId(`rename-poll-option:${index}`)
-            .setEmoji("✏️")
+            .setEmoji(renameIcon)
             .setStyle(ButtonStyle.Primary),
           new ButtonBuilder()
             .setCustomId(`delete-poll-option:${index}`)
-            .setEmoji("🗑️")
+            .setEmoji(deleteIcon)
             .setDisabled(confirmDelete)
             .setStyle(ButtonStyle.Danger)
         )
@@ -157,3 +167,25 @@ export function pollOptions(
 
   return sections;
 }
+
+const numberAsEmoji = (number: number) => {
+  const str = number.toString(10).split("");
+
+  return str
+    .map(
+      (chr) =>
+        ({
+          "0": "0️⃣",
+          "1": "1️⃣",
+          "2": "2️⃣",
+          "3": "3️⃣",
+          "4": "4️⃣",
+          "5": "5️⃣",
+          "6": "6️⃣",
+          "7": "7️⃣",
+          "8": "8️⃣",
+          "9": "9️⃣",
+        })[chr]
+    )
+    .join("");
+};
