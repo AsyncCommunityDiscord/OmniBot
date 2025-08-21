@@ -4,11 +4,9 @@ import {
   ButtonStyle,
   ContainerBuilder,
   SectionBuilder,
-  SeparatorBuilder,
   TextDisplayBuilder,
 } from "discord.js";
 import logger from "../../../lib/logger.js";
-import { Colors } from "../../../utils/colors.js";
 import type { PollData, PollOption } from "../data/poll.js";
 import {
   addIcon,
@@ -26,7 +24,7 @@ export function pollEditionMessage(
 ) {
   const question = data.question ?? "*Aucun titre défini*";
 
-  const builder = new ContainerBuilder().setAccentColor(Colors.Turquoise);
+  const builder = new ContainerBuilder();
 
   builder.addTextDisplayComponents((header) =>
     header.setContent("**Édition du sondage**")
@@ -45,11 +43,10 @@ export function pollEditionMessage(
         new ButtonBuilder()
           .setCustomId("edit-poll-question")
           .setEmoji(renameIcon)
+          .setDisabled(confirmDelete)
           .setStyle(ButtonStyle.Secondary)
       )
   );
-
-  builder.addTextDisplayComponents((options) => options.setContent("## ** **"));
 
   builder.addSeparatorComponents((separator) => separator);
   builder.components.push(
@@ -62,6 +59,7 @@ export function pollEditionMessage(
       new ButtonBuilder()
         .setCustomId("add-poll-option")
         .setEmoji(addIcon)
+        .setDisabled(data.options.length >= 5 || confirmDelete)
         .setLabel("Add option")
         .setStyle(ButtonStyle.Primary)
     )
@@ -119,6 +117,7 @@ export function pollOptions(
             new ButtonBuilder()
               .setCustomId(`edit-poll-option:${index}`)
               .setEmoji(renameIcon)
+              .setDisabled(confirmDelete)
               .setStyle(ButtonStyle.Secondary)
           )
       );
@@ -134,22 +133,24 @@ export function pollOptions(
             new ButtonBuilder()
               .setCustomId("cancel-edit-option")
               .setEmoji(okIcon)
+              .setDisabled(confirmDelete)
               .setStyle(ButtonStyle.Success)
           ),
         new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setCustomId(`move-poll-option:${index}:up`)
             .setEmoji(moveUpIcon)
-            .setDisabled(index === 0)
+            .setDisabled(index === 0 || confirmDelete)
             .setStyle(ButtonStyle.Secondary),
           new ButtonBuilder()
             .setCustomId(`move-poll-option:${index}:down`)
             .setEmoji(moveDownIcon)
-            .setDisabled(index === options.length - 1)
+            .setDisabled(index === options.length - 1 || confirmDelete)
             .setStyle(ButtonStyle.Secondary),
           new ButtonBuilder()
             .setCustomId(`rename-poll-option:${index}`)
             .setEmoji(renameIcon)
+            .setDisabled(confirmDelete)
             .setStyle(ButtonStyle.Primary),
           new ButtonBuilder()
             .setCustomId(`delete-poll-option:${index}`)
@@ -158,10 +159,6 @@ export function pollOptions(
             .setStyle(ButtonStyle.Danger)
         )
       );
-    }
-
-    if (index < options.length - 1) {
-      sections.push(new SeparatorBuilder());
     }
   }
 
