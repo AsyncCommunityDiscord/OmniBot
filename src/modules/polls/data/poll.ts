@@ -1,3 +1,5 @@
+import type { TextChannel } from "discord.js";
+
 export interface PollData {
   authorId: string;
 
@@ -6,7 +8,10 @@ export interface PollData {
 
   options: PollOption[];
 
-  channelId?: string;
+  channel?: TextChannel;
+
+  anonymous: boolean;
+  duration: string;
 }
 
 export interface PollOption {

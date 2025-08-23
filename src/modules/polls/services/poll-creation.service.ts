@@ -18,6 +18,8 @@ class PollCreationService {
     const pollData: PollData = {
       authorId: user.id,
       options: [],
+      duration: "6h",
+      anonymous: false,
     };
 
     this._polls.set(user.id, pollData);
