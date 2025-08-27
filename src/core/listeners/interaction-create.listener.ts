@@ -8,6 +8,7 @@ import type { CompatibleInteraction } from "../../lib/interaction.js";
 import { declareEventListener } from "../../lib/listener.js";
 import logger from "../../lib/logger.js";
 import coreModule from "../core.module.js";
+import configService from "../services/config.service.js";
 import moduleService from "../services/module.service.js";
 
 async function handleCommand(interaction: ChatInputCommandInteraction) {
@@ -37,8 +38,13 @@ async function handleCommand(interaction: ChatInputCommandInteraction) {
       )
     ).activated
   ) {
+    const config = await configService.getConfigForModuleIn(
+      command.module,
+      interaction.guildId!
+    );
+
     logger.debug(`Executing command | name = ${interaction.commandName}`);
-    await command.command.execute(interaction);
+    await command.command.execute(interaction, config);
   } else {
     logger.warn(
       `Command not enabled | name = ${interaction.command?.name} | module = ${command.module.id}`
@@ -67,6 +73,11 @@ async function handleComplete(interaction: AutocompleteInteraction) {
     return;
   }
 
+  const config = await configService.getConfigForModuleIn(
+    coreModule,
+    interaction.guildId!
+  );
+
   if (
     command.module.id === coreModule.id ||
     (
@@ -77,7 +88,7 @@ async function handleComplete(interaction: AutocompleteInteraction) {
     ).activated
   ) {
     logger.debug(`Handling autocomplete | name = ${interaction.commandName}`);
-    await command.command.complete?.(interaction);
+    await command.command.complete?.(interaction, config);
   } else {
     logger.warn(
       `Command not enabled | name = ${interaction.command?.name} | module = ${command.module.id}`
@@ -122,9 +133,14 @@ async function handleInteraction(interaction: CompatibleInteraction) {
       )
     ).activated
   ) {
-    if (!handler.handler.check(interaction)) return;
+    const config = await configService.getConfigForModuleIn(
+      handler.module,
+      interaction.guildId!
+    );
 
-    await handler.handler.execute(interaction, args);
+    if (!handler.handler.check(interaction, config)) return;
+
+    await handler.handler.execute(interaction, args, config);
   }
 }
 
