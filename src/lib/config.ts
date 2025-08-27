@@ -1,6 +1,6 @@
 import { CategoryChannel, type Channel, Role, type User } from "discord.js";
 
-export declare enum ConfigEntryType {
+export enum ConfigEntryType {
   STRING = "STRING",
   NUMBER = "NUMBER",
   BOOLEAN = "BOOLEAN",
@@ -24,18 +24,18 @@ export const ConfigEntryChecker: Record<
   CATEGORY: (value: string) => /^<#(\d+)>$/.test(value),
 };
 
-export declare type ConfigList<T extends ConfigEntryType> = [T];
+export type ConfigList<T extends ConfigEntryType> = [T];
 
-export declare interface ConfigEntry {
+export interface ConfigEntry {
   name: string;
   description: string;
   type: ConfigEntryType | ConfigList<ConfigEntryType>;
 }
 
-export declare type Config = Record<string, ConfigEntry>;
+export type Config = Record<string, ConfigEntry>;
 
 // Table de correspondance des types
-export declare interface ConfigTypeMap {
+export interface ConfigTypeMap {
   [ConfigEntryType.STRING]: string;
   [ConfigEntryType.NUMBER]: number;
   [ConfigEntryType.BOOLEAN]: boolean;
