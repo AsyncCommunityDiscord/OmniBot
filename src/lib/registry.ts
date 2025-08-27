@@ -1,4 +1,6 @@
+import type { ClientEvents } from "discord.js";
 import type { Command } from "./command.js";
+import type { Config } from "./config.js";
 import { DeclarationType, type Declared } from "./declared.js";
 import type { InteractionHandler } from "./interaction.js";
 import type { EventListener } from "./listener.js";
@@ -17,7 +19,7 @@ export class Registry {
    * An array of event listeners declared by the module.
    * @private
    */
-  private readonly _listeners: Declared<EventListener<any>>[] = [];
+  private readonly _listeners: Declared<EventListener<any, any>>[] = [];
 
   /**
    * An array of interaction handlers declared by the module.
@@ -78,12 +80,15 @@ export class Registry {
    * Registers an event listener with the module.
    * @param listener The event listener to register.
    */
-  registerEventListener(listener: Declared<EventListener<any>>): void {
+  registerEventListener<
+    EventType extends keyof ClientEvents,
+    ConfigType extends Config,
+  >(listener: Declared<EventListener<EventType, ConfigType>>): void {
     if (listener.type !== DeclarationType.Listener) {
       throw new Error("Invalid event listener declaration type");
     }
 
-    this._listeners.push(listener);
+    this._listeners.push(listener as Declared<EventListener<any, any>>);
   }
 
   registerInteractionHandler(

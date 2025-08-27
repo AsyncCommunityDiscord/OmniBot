@@ -2,6 +2,7 @@ import { type Client } from "discord.js";
 import { loggerMaker } from "../../lib/logger.js";
 import type { Module } from "../../lib/module.js";
 import coreModule from "../core.module.js";
+import configService from "../services/config.service.js";
 import moduleService from "../services/module.service.js";
 
 const logger = loggerMaker("listeners");
@@ -36,25 +37,30 @@ export function loadModuleEvents(client: Client, module: Module) {
   for (let listener of moduleListeners) {
     logger.info(`\tRegistering listener | event = ${listener.eventType}`);
 
-    client.on(listener.eventType, (...args) => {
+    client.on(listener.eventType, async (...args) => {
       const guildId =
         args.find((arg) => !!arg.roles)?.id ||
         args.find((arg) => !!arg?.guild).guild?.id ||
         args.find((arg) => !!arg?.guildId);
 
       if (guildId) {
-        moduleService
-          .getModuleStateFromGuildIdIn(module.id, guildId)
-          .then((state) => {
-            if (!state.activated) return;
+        const state = await moduleService.getModuleStateFromGuildIdIn(
+          module.id,
+          guildId
+        );
+        if (!state.activated) return;
 
-            listener.execute(...args).then();
-          });
+        const config = await configService.getConfigForModuleIn(
+          module,
+          guildId
+        );
+
+        listener.execute(...args, config).then();
         return;
       }
 
       // If no guildId is found, execute the listener directly
-      listener.execute(...args).then();
+      listener.execute(...args, undefined).then();
     });
   }
 
