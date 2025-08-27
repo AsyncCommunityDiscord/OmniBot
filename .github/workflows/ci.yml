@@ -29,7 +29,10 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build
-      - name: Check format & lint
+      - name: Check code format
+        run: pnpm exec prettier --check .
+      - name: Run linter
         run: |
-          pnpm exec prettier --check .
+          echo "Generating Prisma Client is required for linting because else it fails with 'error TS2307: Cannot find module '../generated/prisma/client.js' or its corresponding type declarations.'"
+          pnpm prisma:generate
           pnpm exec oxlint --deny-warnings
