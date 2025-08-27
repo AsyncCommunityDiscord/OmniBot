@@ -12,16 +12,24 @@ export default declareCommand({
         .setName("module")
         .setDescription("The module to configure")
         .setRequired(true)
+        .setAutocomplete(true)
     ),
   async execute() {},
   async complete(interaction) {
     const modules = await moduleService.getAllModulesStateIn(
       interaction.guildId!
     );
+
     const moduleNames = modules
       .filter((m) => m.enabled)
       .map((m) => ({ name: m.module.name, value: m.module.id }));
 
-    await interaction.respond(moduleNames);
+    await interaction.respond([
+      ...moduleNames,
+      {
+        name: "Base",
+        value: "core",
+      },
+    ]);
   },
 });

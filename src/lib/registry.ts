@@ -1,6 +1,6 @@
 import type { ClientEvents } from "discord.js";
 import type { Command } from "./command.js";
-import type { Config } from "./config.js";
+import type { ConfigSchema } from "./config.js";
 import { DeclarationType, type Declared } from "./declared.js";
 import type { InteractionHandler } from "./interaction.js";
 import type { EventListener } from "./listener.js";
@@ -70,7 +70,7 @@ export class Registry {
    * @throws Will throw an error if the command type is invalid.
    * @deprecated Use `register` method instead.
    */
-  registerCommand(command: Declared<Command>): void {
+  registerCommand(command: Declared<Command<any>>): void {
     if (command.type !== DeclarationType.Command) {
       throw new Error("Invalid command declaration type");
     }
@@ -87,7 +87,7 @@ export class Registry {
    */
   registerEventListener<
     EventType extends keyof ClientEvents,
-    ConfigType extends Config,
+    ConfigType extends ConfigSchema,
   >(listener: Declared<EventListener<EventType, ConfigType>>): void {
     if (listener.type !== DeclarationType.Listener) {
       throw new Error("Invalid event listener declaration type");

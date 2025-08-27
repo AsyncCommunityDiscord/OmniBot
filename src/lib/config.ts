@@ -1,6 +1,7 @@
 import { CategoryChannel, type Channel, Role, type User } from "discord.js";
+import type { Module } from "./module.js";
 
-export enum ConfigEntryType {
+export enum ConfigType {
   STRING = "STRING",
   NUMBER = "NUMBER",
   BOOLEAN = "BOOLEAN",
@@ -10,10 +11,7 @@ export enum ConfigEntryType {
   ROLE = "ROLE",
 }
 
-export const ConfigEntryChecker: Record<
-  ConfigEntryType,
-  (value: string) => boolean
-> = {
+export const ConfigValidator: Record<ConfigType, (value: string) => boolean> = {
   STRING: () => true,
   NUMBER: (value: string) => !isNaN(Number(value)),
   BOOLEAN: (value: string) =>
@@ -24,35 +22,65 @@ export const ConfigEntryChecker: Record<
   CATEGORY: (value: string) => /^<#(\d+)>$/.test(value),
 };
 
-export type ConfigList<T extends ConfigEntryType> = [T];
+export type ListOf<T extends ConfigType> = [T];
 
-export interface ConfigEntry {
+export interface TypeMap {
+  [ConfigType.STRING]: string;
+  [ConfigType.NUMBER]: number;
+  [ConfigType.BOOLEAN]: boolean;
+  [ConfigType.USER]: User;
+  [ConfigType.ROLE]: Role;
+  [ConfigType.CHANNEL]: Channel;
+  [ConfigType.CATEGORY]: CategoryChannel;
+}
+
+export type ResolveType<T extends ConfigType | ListOf<ConfigType>> =
+  T extends ListOf<infer U>
+    ? TypeMap[U][]
+    : T extends ConfigType
+      ? TypeMap[T]
+      : never;
+
+interface SimpleConfigEntry<T extends ConfigType> {
   name: string;
   description: string;
-  type: ConfigEntryType | ConfigList<ConfigEntryType>;
+  type: T;
+  defaultValue?: ResolveType<T>;
 }
 
-export type Config = Record<string, ConfigEntry>;
-
-// Table de correspondance des types
-export interface ConfigTypeMap {
-  [ConfigEntryType.STRING]: string;
-  [ConfigEntryType.NUMBER]: number;
-  [ConfigEntryType.BOOLEAN]: boolean;
-  [ConfigEntryType.USER]: User;
-  [ConfigEntryType.ROLE]: Role;
-  [ConfigEntryType.CHANNEL]: Channel;
-  [ConfigEntryType.CATEGORY]: CategoryChannel;
+interface ListConfigEntry<T extends ConfigType> {
+  name: string;
+  description: string;
+  type: ListOf<T>;
+  defaultValue?: ResolveType<ListOf<T>>;
 }
 
-export class Configured<T extends Config> {
-  get<Key extends keyof T>(
-    key: Key
-  ): T[Key] extends { type: ConfigList<infer U> }
-    ? ConfigTypeMap[U][]
-    : T[Key] extends { type: infer U extends ConfigEntryType }
-      ? ConfigTypeMap[U]
-      : never {
-    throw new Error(`Method not implemented. | key = ${key.toString()}`);
+export type ConfigEntry<T extends ConfigType> =
+  | SimpleConfigEntry<T>
+  | ListConfigEntry<T>;
+
+export type ConfigSchema = Record<string, ConfigEntry<ConfigType>>;
+
+export type ConfigData<TSchema extends ConfigSchema> = {
+  [K in keyof TSchema]: ResolveType<TSchema[K]["type"]>;
+};
+
+export class ConfigProvider<TSchema extends ConfigSchema> {
+  private module: Module<TSchema>;
+  private readonly data: ConfigData<TSchema>;
+
+  constructor(module: Module<TSchema>, data: ConfigData<TSchema>) {
+    this.module = module;
+    this.data = data;
+  }
+
+  get schema() {
+    return this.module.config;
+  }
+
+  get<TKey extends keyof TSchema>(
+    key: TKey
+  ): ResolveType<TSchema[TKey]["type"]> {
+    return this.data[key];
   }
 }
