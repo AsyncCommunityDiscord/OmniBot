@@ -1,5 +1,5 @@
 import type { ClientEvents } from "discord.js";
-import type { Config, Configured } from "./config.js";
+import type { ConfigProvider, ConfigSchema } from "./config.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 /**
@@ -7,7 +7,7 @@ import { DeclarationType, type Declared } from "./declared.js";
  */
 export interface EventListener<
   EventType extends keyof ClientEvents,
-  ConfigType extends Config = {},
+  ConfigType extends ConfigSchema = {},
 > {
   /**
    * The type of the event listener, which corresponds to a key in ClientEvents.
@@ -27,7 +27,10 @@ export interface EventListener<
    * @returns A promise that resolves when the listener has finished executing.
    */
   execute: (
-    ...args: [...ClientEvents[EventType], Configured<ConfigType> | undefined]
+    ...args: [
+      ...ClientEvents[EventType],
+      ConfigProvider<ConfigType> | undefined,
+    ]
   ) => Promise<void>;
 }
 
@@ -38,7 +41,7 @@ export interface EventListener<
  */
 export function declareEventListener<
   EventType extends keyof ClientEvents,
-  ConfigType extends Config = {},
+  ConfigType extends ConfigSchema = {},
 >(
   listener: EventListener<EventType, ConfigType>
 ): Declared<EventListener<EventType, ConfigType>> {

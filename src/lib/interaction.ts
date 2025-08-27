@@ -2,7 +2,7 @@ import type {
   MessageComponentInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
-import type { Config, Configured } from "./config.js";
+import type { ConfigProvider, ConfigSchema } from "./config.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 export type CompatibleInteraction =
@@ -11,17 +11,17 @@ export type CompatibleInteraction =
 
 export interface InteractionHandler<
   Interaction extends CompatibleInteraction,
-  ConfigType extends Config = any,
+  ConfigType extends ConfigSchema = {},
 > {
   customId: string;
   check: (
     interaction: CompatibleInteraction,
-    config: Configured<ConfigType>
+    config: ConfigProvider<ConfigType>
   ) => interaction is Interaction;
   execute: (
     interaction: Interaction,
     args: string[],
-    config: Configured<ConfigType>
+    config: ConfigProvider<ConfigType>
   ) => Promise<void>;
 }
 
