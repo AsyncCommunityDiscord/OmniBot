@@ -11,9 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky || true",
     "prisma:consolidate": "node --loader ts-node/esm scripts/consolidate-schema.ts",
-    "prisma:generate": "pnpm prisma:consolidate && prisma generate",
-    "prisma:migrate": "pnpm prisma:consolidate && prisma migrate dev",
-    "prisma:studio": "pnpm prisma:consolidate && prisma studio"
+    "prisma:generate": "pnpm prisma:consolidate && prisma generate --no-hints",
+    "prisma:migrate": "pnpm prisma:consolidate && prisma migrate dev --no-hints",
+    "prisma:studio": "pnpm prisma:consolidate && prisma studio --no-hints"
   },
   "keywords": [],
   "author": "",
