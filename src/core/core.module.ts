@@ -1,4 +1,5 @@
 import { defineModule } from "../lib/module.js";
+import configCommand from "./commands/config.command.js";
 import moduleCommand from "./commands/module.command.js";
 import disableModuleButton from "./interactions/disable-module.button.js";
 import enableModuleButton from "./interactions/enable-module.button.js";
@@ -14,6 +15,8 @@ export default defineModule({
   onLoad(_, registry) {
     // Register the core module's commands and events in the provided registry
     registry.registerCommand(moduleCommand);
+    registry.registerCommand(configCommand);
+
     registry.registerEventListener(commandListener);
 
     registry.registerInteractionHandler(enableModuleButton);
