@@ -5,8 +5,8 @@ import { pollEditionMessage } from "../utils/poll.messages.js";
 
 export default declareCommand({
   data: new SlashCommandBuilder()
-    .setName("poll")
-    .setDescription("Create a poll"),
+    .setName("vote")
+    .setDescription("Create a votation"),
   async execute(interaction) {
     const pollData = pollCreationService.getOrCreatePoll(interaction.user);
 

@@ -20,7 +20,7 @@ export default defineModule({
   id: "polls",
   name: "Polls",
   description: "Create and manage polls.",
-  version: "0.0.1",
+  version: "0.0.2",
   author: "RedsTom",
   intents: [],
   onLoad(_, registry) {
