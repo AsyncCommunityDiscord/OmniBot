@@ -51,9 +51,15 @@ async function handleCommand(interaction: ChatInputCommandInteraction) {
 }
 
 async function handleComplete(interaction: AutocompleteInteraction) {
-  const command = coreModule.registry.commands.find(
-    (cmd) => cmd.data.name === interaction.commandName
-  );
+  const command = [...modules, coreModule]
+    .flatMap((module) =>
+      module.registry.commands.map((cmd) => ({
+        module: module,
+        command: cmd,
+      }))
+    )
+    .find((cmd) => cmd.command.data.name === interaction.commandName);
+
   if (!command) {
     logger.warn(
       `Command not found for autocomplete | name = ${interaction.commandName}`
@@ -61,8 +67,23 @@ async function handleComplete(interaction: AutocompleteInteraction) {
     return;
   }
 
-  logger.debug(`Handling autocomplete | name = ${interaction.commandName}`);
-  await command.complete?.(interaction);
+  if (
+    command.module.id === coreModule.id ||
+    (
+      await moduleService.getModuleStateIn(
+        command.module.id,
+        interaction.guild!
+      )
+    ).activated
+  ) {
+    logger.debug(`Handling autocomplete | name = ${interaction.commandName}`);
+    await command.command.complete?.(interaction);
+  } else {
+    logger.warn(
+      `Command not enabled | name = ${interaction.command?.name} | module = ${command.module.id}`
+    );
+    await interaction.respond([]);
+  }
 }
 
 async function handleInteraction(interaction: CompatibleInteraction) {
