@@ -1,4 +1,5 @@
 import type { ClientEvents } from "discord.js";
+import type { ClientEvents } from "discord.js";
 import type { Command } from "./command.js";
 import type { ConfigSchema } from "./config.js";
 import { DeclarationType, type Declared } from "./declared.js";

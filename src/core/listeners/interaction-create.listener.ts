@@ -73,6 +73,11 @@ async function handleComplete(interaction: AutocompleteInteraction) {
     return;
   }
 
+  const config = await configService.getConfigForModuleIn(
+    coreModule,
+    interaction.guildId!
+  );
+
   if (
     command.module.id === coreModule.id ||
     (

@@ -18,11 +18,18 @@ export interface EventListener<
    * The configuration schema for the module that registered the listener.
    */
   configType?: ConfigType;
+  eventType: EventType;
+
+  /**
+   * The configuration schema for the module that registered the listener.
+   */
+  configType?: ConfigType;
 
   /**
    * The function to execute when the event is triggered.
    *
    * @param event The event data that triggered the listener.
+   * @param config The configuration for the module that registered the listener.
    * @param config The configuration for the module that registered the listener.
    * @returns A promise that resolves when the listener has finished executing.
    */
