@@ -2,16 +2,27 @@ import type {
   MessageComponentInteraction,
   ModalSubmitInteraction,
 } from "discord.js";
+import type { Config, Configured } from "./config.js";
 import { DeclarationType, type Declared } from "./declared.js";
 
 export type CompatibleInteraction =
   | MessageComponentInteraction
   | ModalSubmitInteraction;
 
-export interface InteractionHandler<T extends CompatibleInteraction> {
+export interface InteractionHandler<
+  Interaction extends CompatibleInteraction,
+  ConfigType extends Config = any,
+> {
   customId: string;
-  check: (interaction: CompatibleInteraction) => interaction is T;
-  execute: (interaction: T, args: string[]) => Promise<void>;
+  check: (
+    interaction: CompatibleInteraction,
+    config: Configured<ConfigType>
+  ) => interaction is Interaction;
+  execute: (
+    interaction: Interaction,
+    args: string[],
+    config: Configured<ConfigType>
+  ) => Promise<void>;
 }
 
 export function declareInteractionHandler<T extends CompatibleInteraction>(
