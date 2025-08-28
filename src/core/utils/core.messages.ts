@@ -1,4 +1,11 @@
-import { ButtonStyle, ContainerBuilder } from "discord.js";
+import { ButtonStyle, ContainerBuilder, SectionBuilder } from "discord.js";
+import {
+  ConfigType,
+  getConfigTypeName,
+  type ConfigProvider,
+  type ConfigSchema,
+} from "../../lib/config.js";
+import type { Module } from "../../lib/module.js";
 import { Colors } from "../../utils/colors.js";
 import type moduleService from "../services/module.service.js";
 
@@ -39,4 +46,57 @@ export const modulesMessage = (
   }
 
   return container;
+};
+
+export const configurationMessage = <TSchema extends ConfigSchema>(
+  module: Module<TSchema>,
+  config: ConfigProvider<TSchema>
+) => {
+  const container = new ContainerBuilder().setAccentColor(Colors.Turquoise);
+  container.addTextDisplayComponents(
+    (text) => text.setContent("# Module configuration"),
+    (text) => text.setContent(`>>> ### **Module name:** \`${module.name}\``)
+  );
+  container.addSeparatorComponents((separator) => separator.setDivider(true));
+
+  const schema = config.schema;
+
+  for (const key in schema) {
+    const option = schema[key];
+    if (!option) continue;
+
+    const value = config.get(key);
+    const section = new SectionBuilder();
+    section.addTextDisplayComponents((text) =>
+      text.setContent(
+        `### **${option.name}**\n>>> **Type:** ${getConfigTypeName(option.type)}\n**Description:** ${option.description}\n**Current value:** \`${value}\``
+      )
+    );
+
+    if (option.type !== ConfigType.BOOLEAN) {
+      section.setButtonAccessory((button) =>
+        button
+          .setCustomId(`configure-module:${module.id}:${key}`)
+          .setEmoji({
+            id: "1408086699720052776",
+            name: "rename",
+          })
+          .setStyle(ButtonStyle.Secondary)
+      );
+    } else {
+      section.setButtonAccessory((button) =>
+        button
+          .setCustomId(`toggle-module:${module.id}:${key}`)
+          .setEmoji({
+            id: value ? "1410625083151618188" : "1410625093901484145",
+            name: value ? "toggleon" : "toggleoff",
+          })
+          .setStyle(ButtonStyle.Secondary)
+      );
+    }
+
+    container.addSectionComponents(section);
+  }
+
+  return [container];
 };
