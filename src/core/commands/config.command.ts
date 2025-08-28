@@ -1,6 +1,14 @@
-import { SlashCommandBuilder } from "discord.js";
+import {
+  ContainerBuilder,
+  MessageFlags,
+  SlashCommandBuilder,
+} from "discord.js";
+import { modules } from "../../index.js";
 import { declareCommand } from "../../lib/command.js";
+import { Colors } from "../../utils/colors.js";
+import configService from "../services/config.service.js";
 import moduleService from "../services/module.service.js";
+import { configurationMessage } from "../utils/core.messages.js";
 
 export default declareCommand({
   data: new SlashCommandBuilder()
@@ -14,7 +22,33 @@ export default declareCommand({
         .setRequired(true)
         .setAutocomplete(true)
     ),
-  async execute() {},
+  async execute(interaction) {
+    const moduleId = interaction.options.getString("module", true);
+    const module = modules.find((m) => m.id === moduleId);
+
+    if (!module) {
+      await interaction.reply({
+        components: [
+          new ContainerBuilder()
+            .setAccentColor(Colors.Red)
+            .addTextDisplayComponents((text) =>
+              text.setContent(`No module with id  \`${moduleId}\``)
+            ),
+        ],
+      });
+      return;
+    }
+
+    const configProvider = await configService.getConfigForModuleIn(
+      module,
+      interaction.guildId!
+    );
+
+    await interaction.reply({
+      components: configurationMessage(module, configProvider),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  },
   async complete(interaction) {
     const modules = await moduleService.getAllModulesStateIn(
       interaction.guildId!
