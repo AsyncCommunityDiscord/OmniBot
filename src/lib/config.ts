@@ -22,6 +22,27 @@ export const ConfigValidator: Record<ConfigType, (value: string) => boolean> = {
   CATEGORY: (value: string) => /^<#(\d+)>$/.test(value),
 };
 
+export function getConfigTypeName(
+  type: ConfigType | ListOf<ConfigType>
+): string {
+  if (Array.isArray(type)) {
+    return `List of ${configTypeNames[type[0]]}`;
+  }
+
+  const name = configTypeNames[type];
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+export const configTypeNames: Record<ConfigType, string> = {
+  STRING: "text",
+  NUMBER: "number",
+  BOOLEAN: "boolean",
+  USER: "user",
+  ROLE: "role",
+  CHANNEL: "channel",
+  CATEGORY: "category",
+};
+
 export type ListOf<T extends ConfigType> = [T];
 
 export interface TypeMap {
