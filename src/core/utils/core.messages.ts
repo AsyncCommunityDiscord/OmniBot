@@ -53,9 +53,8 @@ export const configurationMessage = <TSchema extends ConfigSchema>(
   config: ConfigProvider<TSchema>
 ) => {
   const container = new ContainerBuilder().setAccentColor(Colors.Turquoise);
-  container.addTextDisplayComponents(
-    (text) => text.setContent("# Module configuration"),
-    (text) => text.setContent(`>>> ### **Module name:** \`${module.name}\``)
+  container.addTextDisplayComponents((text) =>
+    text.setContent(`# \`${module.name}\` settings`)
   );
   container.addSeparatorComponents((separator) => separator.setDivider(true));
 
@@ -69,7 +68,7 @@ export const configurationMessage = <TSchema extends ConfigSchema>(
     const section = new SectionBuilder();
     section.addTextDisplayComponents((text) =>
       text.setContent(
-        `### **${option.name}**\n>>> **Type:** ${getConfigTypeName(option.type)}\n**Description:** ${option.description}\n**Current value:** \`${value}\``
+        `-# ${getConfigTypeName(option.type)}\n**⚙️  ${option.name}**\n> ${option.description}\nCurrent: \`${value}\`\n\n`
       )
     );
 
@@ -81,17 +80,17 @@ export const configurationMessage = <TSchema extends ConfigSchema>(
             id: "1408086699720052776",
             name: "rename",
           })
-          .setStyle(ButtonStyle.Secondary)
+          .setStyle(ButtonStyle.Primary)
       );
     } else {
       section.setButtonAccessory((button) =>
         button
-          .setCustomId(`toggle-module:${module.id}:${key}`)
+          .setCustomId(`toggle-option:${module.id}:${key}`)
           .setEmoji({
             id: value ? "1410625083151618188" : "1410625093901484145",
             name: value ? "toggleon" : "toggleoff",
           })
-          .setStyle(ButtonStyle.Secondary)
+          .setStyle(value ? ButtonStyle.Success : ButtonStyle.Danger)
       );
     }
 

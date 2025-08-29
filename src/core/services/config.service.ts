@@ -311,6 +311,13 @@ class ConfigService {
       return null;
     }
   }
+
+  isConfigKey(
+    module: Module,
+    key: string | undefined
+  ): key is keyof typeof module.config {
+    return module.config ? (key ?? "") in module.config : false;
+  }
 }
 
 export default declareService(new ConfigService());
