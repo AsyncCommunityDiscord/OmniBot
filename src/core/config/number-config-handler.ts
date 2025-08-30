@@ -1,16 +1,17 @@
 import {
   ActionRowBuilder,
+  ContainerBuilder,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
   type ButtonInteraction,
-  type MessageComponentBuilder,
 } from "discord.js";
 import {
   ConfigType,
   type ConfigProvider,
   type ConfigSchema,
 } from "../../lib/config.js";
+import { declareInteractionHandler } from "../../lib/interaction.js";
 import type { Module } from "../../lib/module.js";
 import type { Registry } from "../../lib/registry.js";
 import { ConfigTypeHandler } from "./config-type-handler.js";
@@ -24,11 +25,11 @@ export default class NumberConfigHandler extends ConfigTypeHandler<ConfigType.NU
     interaction: ButtonInteraction,
     module: Module<TSchema>,
     config: ConfigProvider<TSchema>,
-    key: string
+    key: keyof TSchema
   ): Promise<void> {
     const modal = new ModalBuilder()
-      .setCustomId(`set-config-number-modal:${module.id}:${key}`)
-      .setTitle(`Set ${key}`)
+      .setCustomId(`set-config-number-modal:${module.id}:${key.toString()}`)
+      .setTitle(`Set ${key.toString()}`)
       .addComponents(
         new ActionRowBuilder<TextInputBuilder>().addComponents(
           new TextInputBuilder()
@@ -46,11 +47,19 @@ export default class NumberConfigHandler extends ConfigTypeHandler<ConfigType.NU
   public override editionSection<TSchema extends ConfigSchema>(
     _module: Module<TSchema>,
     _configuration: ConfigProvider<TSchema>,
-    _key: string
-  ): Promise<MessageComponentBuilder> {
+    _key: keyof TSchema
+  ): Promise<ContainerBuilder> {
     throw new Error("Method not implemented.");
   }
   public override async registerEditionInteractionHandlers(
-    _registry: Registry
-  ): Promise<void> {}
+    registry: Registry
+  ): Promise<void> {
+    registry.registerInteractionHandler(handleModalSubmit);
+  }
 }
+
+const handleModalSubmit = declareInteractionHandler({
+  customId: "set-config-number-modal",
+  check: (interaction) => interaction.isModalSubmit(),
+  async execute() {},
+});

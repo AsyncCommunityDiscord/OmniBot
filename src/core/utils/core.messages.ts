@@ -7,6 +7,7 @@ import {
 } from "../../lib/config.js";
 import type { Module } from "../../lib/module.js";
 import { Colors } from "../../utils/colors.js";
+import configTypeHandlers from "../config/config-type-handlers.js";
 import type moduleService from "../services/module.service.js";
 
 export const modulesMessage = (
@@ -48,9 +49,10 @@ export const modulesMessage = (
   return container;
 };
 
-export const configurationMessage = <TSchema extends ConfigSchema>(
+export const configurationMessage = async <TSchema extends ConfigSchema>(
   module: Module<TSchema>,
-  config: ConfigProvider<TSchema>
+  config: ConfigProvider<TSchema>,
+  editedField: keyof TSchema
 ) => {
   const container = new ContainerBuilder().setAccentColor(Colors.Turquoise);
   container.addTextDisplayComponents((text) =>
@@ -97,5 +99,23 @@ export const configurationMessage = <TSchema extends ConfigSchema>(
     container.addSectionComponents(section);
   }
 
-  return [container];
+  const components: ContainerBuilder[] = [container];
+
+  if (editedField && schema[editedField]) {
+    const fieldType = schema[editedField].type;
+
+    if (!Array.isArray(fieldType)) {
+      const comp = await configTypeHandlers[fieldType]?.editionSection(
+        module,
+        config,
+        editedField
+      );
+
+      if (comp) {
+        components.push(comp);
+      }
+    }
+  }
+
+  return components;
 };
