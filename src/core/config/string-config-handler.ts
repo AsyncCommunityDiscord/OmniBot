@@ -1,10 +1,10 @@
 import {
   ActionRowBuilder,
   ButtonInteraction,
+  ContainerBuilder,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  type MessageComponentBuilder,
 } from "discord.js";
 import {
   ConfigProvider,
@@ -46,8 +46,8 @@ export default class StringConfigHandler extends ConfigTypeHandler<ConfigType.ST
   public override editionSection<TSchema extends ConfigSchema>(
     _module: Module<TSchema>,
     _configuration: ConfigProvider<TSchema>,
-    _key: string
-  ): Promise<MessageComponentBuilder> {
+    _key: keyof TSchema
+  ): Promise<ContainerBuilder> {
     throw new Error("Method not implemented.");
   }
 

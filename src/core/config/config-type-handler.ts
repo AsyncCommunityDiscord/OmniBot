@@ -1,4 +1,4 @@
-import type { ButtonInteraction, MessageComponentBuilder } from "discord.js";
+import type { ButtonInteraction, ContainerBuilder } from "discord.js";
 import {
   ConfigValidator,
   type ConfigProvider,
@@ -20,8 +20,8 @@ export abstract class ConfigTypeHandler<Type extends ConfigType> {
   public abstract editionSection<TSchema extends ConfigSchema>(
     module: Module<TSchema>,
     configuration: ConfigProvider<TSchema>,
-    key: string
-  ): Promise<MessageComponentBuilder>;
+    key: keyof TSchema
+  ): Promise<ContainerBuilder>;
 
   public abstract registerEditionInteractionHandlers(
     registry: Registry
