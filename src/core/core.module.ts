@@ -13,11 +13,11 @@ export default defineModule({
   intents: [],
   onLoad(_, registry) {
     // Register the core module's commands and events in the provided registry
-    registry.registerCommand(moduleCommand);
-    registry.registerEventListener(commandListener);
+    registry.register(moduleCommand);
+    registry.register(commandListener);
 
-    registry.registerInteractionHandler(enableModuleButton);
-    registry.registerInteractionHandler(disableModuleButton);
+    registry.register(enableModuleButton);
+    registry.register(disableModuleButton);
   },
   onInstall() {
     throw new Error("Core module cannot be installed or uninstalled.");
