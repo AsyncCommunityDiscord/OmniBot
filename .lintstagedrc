@@ -3,5 +3,6 @@
     "prettier --check",
     "oxlint --deny-warnings"
   ],
-  "**/*.{md,json}": "prettier --check"
+  "**/*.{md,json}": "prettier --check",
+  "renovate.json": "pnpm --package=renovate dlx renovate-config-validator --strict"
 }
