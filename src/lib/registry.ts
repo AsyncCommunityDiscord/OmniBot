@@ -65,6 +65,8 @@ export class Registry {
   /**
    * Registers a command with the module.
    * @param command The command to register.
+   * @throws Will throw an error if the command type is invalid.
+   * @deprecated Use `register` method instead.
    */
   registerCommand(command: Declared<Command>): void {
     if (command.type !== DeclarationType.Command) {
@@ -76,7 +78,10 @@ export class Registry {
 
   /**
    * Registers an event listener with the module.
+
    * @param listener The event listener to register.
+   * @throws Will throw an error if the listener type is invalid.
+   * @deprecated Use `register` method instead.
    */
   registerEventListener(listener: Declared<EventListener<any>>): void {
     if (listener.type !== DeclarationType.Listener) {
@@ -86,6 +91,13 @@ export class Registry {
     this._listeners.push(listener);
   }
 
+  /**
+   * Registers an interaction handler with the module.
+   *
+   * @param interactionHandle The interaction handler to register.
+   * @throws Will throw an error if the interaction handler type is invalid.
+   * @deprecated Use `register` method instead.
+   */
   registerInteractionHandler(
     interactionHandle: Declared<InteractionHandler<any>>
   ) {
@@ -94,5 +106,30 @@ export class Registry {
     }
 
     this._interactionHandlers.push(interactionHandle);
+  }
+
+  /**
+   * Registers a handler (command, event listener, or interaction handler) with the module.
+   * @param handler The handler to register.
+   * @throws Will throw an error if the handler type is unknown.
+   */
+  register(
+    handler: Declared<InteractionHandler<any> | EventListener<any> | Command>
+  ) {
+    switch (handler.type) {
+      case DeclarationType.Command:
+        this.registerCommand(handler as Declared<Command>);
+        break;
+      case DeclarationType.Listener:
+        this.registerEventListener(handler as Declared<EventListener<any>>);
+        break;
+      case DeclarationType.Interaction:
+        this.registerInteractionHandler(
+          handler as Declared<InteractionHandler<any>>
+        );
+        break;
+      default:
+        throw new Error(`Unknown declaration type | type = ${handler.type}`);
+    }
   }
 }
