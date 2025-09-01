@@ -25,6 +25,9 @@ export default defineModule({
     registry.register(enableModuleButton);
     registry.register(disableModuleButton);
 
+    registry.register(configureModuleButton);
+    registry.register(toggleOptionButton);
+
     for (const [, handler] of Object.entries(configTypeHandlers)) {
       handler?.registerEditionInteractionHandlers(registry);
     }
