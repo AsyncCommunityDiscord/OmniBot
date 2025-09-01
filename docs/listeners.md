@@ -36,7 +36,7 @@ import messageListener from "./listeners/message-create.listener.js";
 export default defineModule({
   onLoad(client, registry) {
     // Le système gère automatiquement l'activation/désactivation
-    registry.registerEventListener(messageListener);
+    registry.register(messageListener);
   },
 });
 ```
