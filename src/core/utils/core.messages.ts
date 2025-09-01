@@ -52,7 +52,7 @@ export const modulesMessage = (
 export const configurationMessage = async <TSchema extends ConfigSchema>(
   module: Module<TSchema>,
   config: ConfigProvider<TSchema>,
-  editedField: keyof TSchema
+  editedField: keyof TSchema | undefined = undefined
 ) => {
   const container = new ContainerBuilder().setAccentColor(Colors.Turquoise);
   container.addTextDisplayComponents((text) =>
