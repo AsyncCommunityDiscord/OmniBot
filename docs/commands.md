@@ -53,7 +53,7 @@ import messageListener from "./commands/test.command.js";
 export default defineModule({
   onLoad(client, registry) {
     // Le système gère automatiquement l'enregistrement et la désactivation des commandes
-    registry.registerCommand(testCommand);
+    registry.register(testCommand);
   },
 });
 ```

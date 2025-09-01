@@ -42,10 +42,13 @@ export default defineModule({
   // Appelé au démarrage du bot
   onLoad(client, registry) {
     // Enregistrer les commandes
-    registry.registerCommand(maCommande);
+    registry.register(maCommande);
 
     // Enregistrer les listeners
-    registry.registerEventListener(monListener);
+    registry.register(monListener);
+
+    // Enregistrer les interactions
+    registry.register(monInteraction);
 
     logger.info("Mon module chargé avec succès");
   },
@@ -128,5 +131,6 @@ onInstall(client, guild, registry);
 
 Une fois votre module créé, consultez :
 
-- [Guide des Commandes](../commands/commands.md) pour ajouter des commandes
-- [Guide des Listeners](../listeners/listeners.md) pour écouter des événements
+- [Guide des Commandes](./commands.md) pour ajouter des commandes
+- [Guide des Listeners](./listeners.md) pour écouter des événements
+- [Guide des Interactions](./interactions.md) pour définir des interactions (boutons, modal, etc.)
