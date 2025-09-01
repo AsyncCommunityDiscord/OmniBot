@@ -1,6 +1,10 @@
+import type { ClientEvents } from "discord.js";
 import type { Command } from "./command.js";
 import { DeclarationType, type Declared } from "./declared.js";
-import type { InteractionHandler } from "./interaction.js";
+import type {
+  CompatibleInteraction,
+  InteractionHandler,
+} from "./interaction.js";
 import type { EventListener } from "./listener.js";
 
 /**
@@ -113,14 +117,14 @@ export class Registry {
    * @param handler The handler to register.
    * @throws Will throw an error if the handler type is unknown.
    */
-    /**
+  /**
    * Registers a handler (command, event listener, or interaction handler) with the module.
    * @param handler The handler to register.
    * @throws Will throw an error if the handler type is unknown.
    */
   register<
     TEventType extends keyof ClientEvents,
-    TCompatibleInteraction extends CompatibleInteraction
+    TCompatibleInteraction extends CompatibleInteraction,
   >(
     handler: Declared<
       | InteractionHandler<TCompatibleInteraction>
@@ -130,15 +134,13 @@ export class Registry {
   ) {
     switch (handler.type) {
       case DeclarationType.Command:
-        this.registerCommand(handler as Declared<Command>);
+        this._commands.push(handler as Declared<Command>);
         break;
       case DeclarationType.Listener:
-        this.registerEventListener(
-          handler as Declared<EventListener<TEventType>>
-        );
+        this._listeners.push(handler as Declared<EventListener<TEventType>>);
         break;
       case DeclarationType.Interaction:
-        this.registerInteractionHandler(
+        this._interactionHandlers.push(
           handler as Declared<InteractionHandler<TCompatibleInteraction>>
         );
         break;
