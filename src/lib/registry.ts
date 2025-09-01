@@ -120,12 +120,11 @@ export class Registry {
    */
   register<
     TEventType extends keyof ClientEvents,
-    TCompatibleInteraction extends CompatibleInteraction,
-    TConfig extends ConfigSchema,
+    TCompatibleInteraction extends CompatibleInteraction
   >(
     handler: Declared<
-      | InteractionHandler<TCompatibleInteraction, TConfig>
-      | EventListener<TEventType, TConfig>
+      | InteractionHandler<TCompatibleInteraction>
+      | EventListener<TEventType>
       | Command
     >
   ) {
@@ -135,12 +134,12 @@ export class Registry {
         break;
       case DeclarationType.Listener:
         this.registerEventListener(
-          handler as Declared<EventListener<TEventType, TConfig>>
+          handler as Declared<EventListener<TEventType>>
         );
         break;
       case DeclarationType.Interaction:
         this.registerInteractionHandler(
-          handler as Declared<InteractionHandler<any>>
+          handler as Declared<InteractionHandler<TCompatibleInteraction>>
         );
         break;
       default:
