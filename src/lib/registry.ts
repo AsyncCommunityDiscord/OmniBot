@@ -113,15 +113,30 @@ export class Registry {
    * @param handler The handler to register.
    * @throws Will throw an error if the handler type is unknown.
    */
-  register(
-    handler: Declared<InteractionHandler<any> | EventListener<any> | Command>
+    /**
+   * Registers a handler (command, event listener, or interaction handler) with the module.
+   * @param handler The handler to register.
+   * @throws Will throw an error if the handler type is unknown.
+   */
+  register<
+    TEventType extends keyof ClientEvents,
+    TCompatibleInteraction extends CompatibleInteraction,
+    TConfig extends ConfigSchema,
+  >(
+    handler: Declared<
+      | InteractionHandler<TCompatibleInteraction, TConfig>
+      | EventListener<TEventType, TConfig>
+      | Command
+    >
   ) {
     switch (handler.type) {
       case DeclarationType.Command:
         this.registerCommand(handler as Declared<Command>);
         break;
       case DeclarationType.Listener:
-        this.registerEventListener(handler as Declared<EventListener<any>>);
+        this.registerEventListener(
+          handler as Declared<EventListener<TEventType, TConfig>>
+        );
         break;
       case DeclarationType.Interaction:
         this.registerInteractionHandler(
