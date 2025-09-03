@@ -39,8 +39,9 @@ export class ThreadCreatorService {
     const currentCount = this.rateLimitMap.get(key) || 0;
 
     // Nettoyer les anciennes entrées
-    for (const [mapKey, timestamp] of this.rateLimitMap.entries()) {
-      if (timestamp < windowStart) {
+    for (const [mapKey, _] of this.rateLimitMap.entries()) {
+      const window = parseInt(mapKey.split(":")[1]!);
+      if (window * this.RATE_LIMIT_WINDOW < windowStart) {
         this.rateLimitMap.delete(mapKey);
       }
     }
@@ -181,7 +182,6 @@ export class ThreadCreatorService {
     updates: Partial<{
       channelId: string;
       welcomeMessage: string;
-      threadType: "PUBLIC" | "PRIVATE";
       threadNameTemplate: string;
       enabled: boolean;
     }>
@@ -195,9 +195,6 @@ export class ThreadCreatorService {
           channelId: updates.channelId || "",
           ...(updates.welcomeMessage !== undefined && {
             welcomeMessage: updates.welcomeMessage,
-          }),
-          ...(updates.threadType !== undefined && {
-            threadType: updates.threadType,
           }),
           ...(updates.threadNameTemplate !== undefined && {
             threadNameTemplate: updates.threadNameTemplate,
