@@ -29,7 +29,7 @@
     "no-global-assign": "warn",
     "no-import-assign": "warn",
     "no-invalid-regexp": "warn",
-    "no-irregular-whitespace": "off",
+    "no-irregular-whitespace": "warn",
     "no-loss-of-precision": "warn",
     "no-new-native-nonconstructor": "warn",
     "no-nonoctal-decimal-escape": "warn",

@@ -1,4 +1,4 @@
-﻿export interface ThreadCreatorConfig {
+export interface ThreadCreatorConfig {
   channelId: string;
   welcomeMessage: string;
   threadNameTemplate: string;

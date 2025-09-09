@@ -181,19 +181,25 @@ class ThreadCreatorService implements Service {
    */
   async updateConfig(guildId: string, updates: Partial<ThreadCreatorConfig>) {
     try {
+      // Pour la création, channelId est obligatoire
+      if (!updates.channelId && !(await this.getConfig(guildId))) {
+        throw new Error(
+          "channelId est requis pour créer une nouvelle configuration"
+        );
+      }
+
       return await prisma.threadCreatorConfig.upsert({
         where: { guildId },
         update: updates,
         create: {
           guildId,
-          channelId: updates.channelId || "",
+          channelId: updates.channelId!,
+          enabled: updates.enabled ?? true,
+          threadNameTemplate:
+            updates.threadNameTemplate ?? "Discussion - {messageAuthor}",
           ...(updates.welcomeMessage !== undefined && {
             welcomeMessage: updates.welcomeMessage,
           }),
-          ...(updates.threadNameTemplate !== undefined && {
-            threadNameTemplate: updates.threadNameTemplate,
-          }),
-          ...(updates.enabled !== undefined && { enabled: updates.enabled }),
         },
       });
     } catch (error) {
