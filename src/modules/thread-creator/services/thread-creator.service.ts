@@ -1,16 +1,18 @@
-import { type Message, type TextChannel, ChannelType } from "discord.js";
+import { ChannelType, type Message, type TextChannel } from "discord.js";
 import prisma from "../../../lib/database.js";
 import logger from "../../../lib/logger.js";
+import { declareService, type Service } from "../../../lib/service.js";
+import type { ThreadCreatorConfig } from "../data/thread-creator.js";
 
-export class ThreadCreatorService {
-  private static rateLimitMap = new Map<string, number>();
-  private static readonly RATE_LIMIT_WINDOW = 10000; // 10 secondes
-  private static readonly MAX_THREADS_PER_WINDOW = 5;
+class ThreadCreatorService implements Service {
+  private rateLimitMap = new Map<string, number>();
+  private readonly RATE_LIMIT_WINDOW = 10000; // 10 secondes
+  private readonly MAX_THREADS_PER_WINDOW = 5;
 
   /**
    * Vérifie si le module est configuré et actif pour ce serveur et ce canal
    */
-  static async isEnabledForChannel(
+  async isEnabledForChannel(
     guildId: string,
     channelId: string
   ): Promise<boolean> {
@@ -31,7 +33,7 @@ export class ThreadCreatorService {
   /**
    * Vérifie le rate limiting pour éviter de dépasser les limites de l'API Discord
    */
-  static checkRateLimit(guildId: string): boolean {
+  checkRateLimit(guildId: string): boolean {
     const now = Date.now();
     const windowStart = now - this.RATE_LIMIT_WINDOW;
     const key = `${guildId}:${Math.floor(now / this.RATE_LIMIT_WINDOW)}`;
@@ -57,7 +59,7 @@ export class ThreadCreatorService {
   /**
    * Génère un nom pour le fil de discussion en utilisant le template
    */
-  static generateThreadName(template: string, message: Message): string {
+  generateThreadName(template: string, message: Message): string {
     const variables = {
       messageAuthor: message.author.displayName || message.author.username,
       messageContent: message.content
@@ -84,7 +86,7 @@ export class ThreadCreatorService {
   /**
    * Crée un fil de discussion pour le message donné
    */
-  static async createThreadForMessage(message: Message): Promise<void> {
+  async createThreadForMessage(message: Message): Promise<void> {
     if (!message.guild) {
       return;
     }
@@ -177,15 +179,7 @@ export class ThreadCreatorService {
   /**
    * Met à jour la configuration pour un serveur
    */
-  static async updateConfig(
-    guildId: string,
-    updates: Partial<{
-      channelId: string;
-      welcomeMessage: string;
-      threadNameTemplate: string;
-      enabled: boolean;
-    }>
-  ) {
+  async updateConfig(guildId: string, updates: Partial<ThreadCreatorConfig>) {
     try {
       return await prisma.threadCreatorConfig.upsert({
         where: { guildId },
@@ -213,7 +207,7 @@ export class ThreadCreatorService {
   /**
    * Récupère la configuration pour un serveur
    */
-  static async getConfig(guildId: string) {
+  async getConfig(guildId: string) {
     try {
       return await prisma.threadCreatorConfig.findUnique({
         where: { guildId },
@@ -226,3 +220,5 @@ export class ThreadCreatorService {
     }
   }
 }
+
+export default declareService(new ThreadCreatorService());

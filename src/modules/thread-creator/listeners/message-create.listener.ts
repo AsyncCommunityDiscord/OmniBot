@@ -1,7 +1,7 @@
 import { type Message, ChannelType } from "discord.js";
 import { declareEventListener } from "../../../lib/listener.js";
 import logger from "../../../lib/logger.js";
-import { ThreadCreatorService } from "../services/thread-creator.service.js";
+import threadCreatorService from "../services/thread-creator.service.js";
 
 export default declareEventListener({
   eventType: "messageCreate",
@@ -28,7 +28,7 @@ export default declareEventListener({
     }
 
     try {
-      await ThreadCreatorService.createThreadForMessage(message);
+      await threadCreatorService.createThreadForMessage(message);
     } catch (error) {
       logger.error(
         `Erreur dans le listener messageCreate du ThreadCreator : ${error}`

@@ -1,12 +1,14 @@
 import {
   ChannelType,
+  EmbedBuilder,
+  MessageFlags,
   PermissionFlagsBits,
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
 } from "discord.js";
 import { declareCommand } from "../../../lib/command.js";
 import logger from "../../../lib/logger.js";
-import { ThreadCreatorService } from "../services/thread-creator.service.js";
+import threadCreatorService from "../services/thread-creator.service.js";
 
 export default declareCommand({
   data: new SlashCommandBuilder()
@@ -59,16 +61,8 @@ export default declareCommand({
     ),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    if (!interaction.guild) {
-      await interaction.reply({
-        content: "❌ Cette commande ne peut être utilisée que dans un serveur.",
-        ephemeral: true,
-      });
-      return;
-    }
-
     const subcommand = interaction.options.getSubcommand();
-    const guildId = interaction.guild.id;
+    const guildId = interaction.guildId!;
 
     try {
       switch (subcommand) {
@@ -89,9 +83,15 @@ export default declareCommand({
         "❌ Une erreur est survenue lors de l'exécution de la commande.";
 
       if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({ content: errorMessage, ephemeral: true });
+        await interaction.followUp({
+          content: errorMessage,
+          flags: MessageFlags.Ephemeral,
+        });
       } else {
-        await interaction.reply({ content: errorMessage, ephemeral: true });
+        await interaction.reply({
+          content: errorMessage,
+          flags: MessageFlags.Ephemeral,
+        });
       }
     }
   },
@@ -106,7 +106,7 @@ async function handleSetup(
   const nameTemplate = interaction.options.getString("nom-template");
   const enabled = interaction.options.getBoolean("actif");
 
-  const updates: Parameters<typeof ThreadCreatorService.updateConfig>[1] = {
+  const updates: Parameters<typeof threadCreatorService.updateConfig>[1] = {
     channelId: channel.id,
   };
 
@@ -122,12 +122,12 @@ async function handleSetup(
     updates.enabled = enabled;
   }
 
-  await ThreadCreatorService.updateConfig(guildId, updates);
+  await threadCreatorService.updateConfig(guildId, updates);
 
-  const embed = {
-    color: 0x00ff00,
-    title: "✅ Configuration mise à jour",
-    fields: [
+  const embed = new EmbedBuilder()
+    .setColor(0x00ff00)
+    .setTitle("✅ Configuration mise à jour")
+    .addFields(
       {
         name: "Canal surveillé",
         value: `<#${channel.id}>`,
@@ -137,13 +137,12 @@ async function handleSetup(
         name: "État",
         value: updates.enabled !== false ? "🟢 Actif" : "🔴 Inactif",
         inline: true,
-      },
-    ],
-    timestamp: new Date().toISOString(),
-  };
+      }
+    )
+    .setTimestamp();
 
   if (welcomeMessage) {
-    embed.fields.push({
+    embed.addFields({
       name: "Message de bienvenue",
       value: welcomeMessage,
       inline: false,
@@ -151,7 +150,7 @@ async function handleSetup(
   }
 
   if (nameTemplate) {
-    embed.fields.push({
+    embed.addFields({
       name: "Template de nom",
       value: nameTemplate,
       inline: false,
@@ -165,23 +164,23 @@ async function handleStatus(
   interaction: ChatInputCommandInteraction,
   guildId: string
 ) {
-  const config = await ThreadCreatorService.getConfig(guildId);
+  const config = await threadCreatorService.getConfig(guildId);
 
   if (!config) {
     await interaction.reply({
       content:
         "❌ Aucune configuration trouvée. Utilisez `/thread-config setup` pour commencer.",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return;
   }
 
   const channel = interaction.guild?.channels.cache.get(config.channelId);
 
-  const embed = {
-    color: config.enabled ? 0x00ff00 : 0xff9900,
-    title: "📋 Configuration ThreadCreator",
-    fields: [
+  const embed = new EmbedBuilder()
+    .setColor(config.enabled ? 0x00ff00 : 0xff9900)
+    .setTitle("📋 Configuration ThreadCreator")
+    .addFields(
       {
         name: "État",
         value: config.enabled ? "🟢 Actif" : "🔴 Inactif",
@@ -203,30 +202,29 @@ async function handleStatus(
         name: "Template de nom",
         value: config.threadNameTemplate,
         inline: false,
-      },
-    ],
-    footer: {
+      }
+    )
+    .setFooter({
       text: `Configuré le ${config.createdAt.toLocaleDateString("fr-FR")}`,
-    },
-    timestamp: new Date().toISOString(),
-  };
+    })
+    .setTimestamp();
 
-  await interaction.reply({ embeds: [embed] });
+  await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }
 
 async function handleDisable(
   interaction: ChatInputCommandInteraction,
   guildId: string
 ) {
-  await ThreadCreatorService.updateConfig(guildId, { enabled: false });
+  await threadCreatorService.updateConfig(guildId, { enabled: false });
 
-  const embed = {
-    color: 0xff0000,
-    title: "🔴 Module désactivé",
-    description:
-      "La création automatique de fils de discussion a été désactivée.\nUtilisez `/thread-config setup` pour la réactiver.",
-    timestamp: new Date().toISOString(),
-  };
+  const embed = new EmbedBuilder()
+    .setColor(0xff0000)
+    .setTitle("🔴 Module désactivé")
+    .setDescription(
+      "La création automatique de fils de discussion a été désactivée.\nUtilisez `/thread-config setup` pour la réactiver."
+    )
+    .setTimestamp();
 
-  await interaction.reply({ embeds: [embed] });
+  await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }
