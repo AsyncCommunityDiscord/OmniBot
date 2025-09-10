@@ -30,6 +30,6 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build
       - name: Check code format
-        run: pnpm exec prettier --check .
+        run: pnpm exec prettier --experimental-cli --check .
       - name: Run linter
         run: pnpm exec oxlint --deny-warnings
