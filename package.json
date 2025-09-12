@@ -10,9 +10,10 @@
     "start": "node ./bootstrap/validate-env-vars.mjs && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky || true",
+    "clean": "prettier . --write --ignore-unknown && oxlint --fix --fix-suggestions",
     "prisma:consolidate": "node --loader ts-node/esm scripts/consolidate-schema.ts",
     "prisma:generate": "pnpm prisma:consolidate && prisma generate --no-hints",
-    "prisma:migrate": "pnpm prisma:consolidate && prisma migrate dev --no-hints",
+    "prisma:migrate": "pnpm prisma:consolidate && prisma migrate dev",
     "prisma:studio": "pnpm prisma:consolidate && prisma studio --no-hints"
   },
   "keywords": [],
