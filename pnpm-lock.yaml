@@ -50,7 +50,7 @@ importers:
         version: 3.6.2
       prettier-plugin-organize-imports:
         specifier: ^4.2.0
-        version: 4.2.0(prettier@3.6.2)(typescript@5.9.2)
+        version: 4.3.0(prettier@3.6.2)(typescript@5.9.2)
       tsx:
         specifier: ^4.20.5
         version: 4.20.5
@@ -949,8 +949,8 @@ packages:
   pkg-types@2.2.0:
     resolution: {integrity: sha512-2SM/GZGAEkPp3KWORxQZns4M+WSeXbC2HEvmOIJe3Cmiv6ieAJvdVhDldtHqM5J1Y7MrR1XhkBT/rMlhh9FdqQ==}
 
-  prettier-plugin-organize-imports@4.2.0:
-    resolution: {integrity: sha512-Zdy27UhlmyvATZi67BTnLcKTo8fm6Oik59Sz6H64PgZJVs6NJpPD1mT240mmJn62c98/QaL+r3kx9Q3gRpDajg==}
+  prettier-plugin-organize-imports@4.3.0:
+    resolution: {integrity: sha512-FxFz0qFhyBsGdIsb697f/EkvHzi5SZOhWAjxcx2dLt+Q532bAlhswcXGYB1yzjZ69kW8UoadFBw7TyNwlq96Iw==}
     peerDependencies:
       prettier: '>=2.0'
       typescript: '>=2.9'
@@ -2027,7 +2027,7 @@ snapshots:
       exsolve: 1.0.7
       pathe: 2.0.3
 
-  prettier-plugin-organize-imports@4.2.0(prettier@3.6.2)(typescript@5.9.2):
+  prettier-plugin-organize-imports@4.3.0(prettier@3.6.2)(typescript@5.9.2):
     dependencies:
       prettier: 3.6.2
       typescript: 5.9.2
