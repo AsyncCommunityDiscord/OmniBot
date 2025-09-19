@@ -70,7 +70,7 @@ Le projet fournit plusieurs scripts pour faciliter le travail avec Prisma :
 
 ```json
 {
-  "prisma:consolidate": "node --loader ts-node/esm scripts/consolidate-schema.ts",
+  "prisma:consolidate": "tsx scripts/consolidate-schema.ts",
   "prisma:generate": "pnpm prisma:consolidate && prisma generate",
   "prisma:migrate": "pnpm prisma:consolidate && prisma migrate dev",
   "prisma:studio": "pnpm prisma:consolidate && prisma studio"
