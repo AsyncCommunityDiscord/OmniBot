@@ -34,12 +34,6 @@ function displayEnvironmentVariables() {
 
 // --- Code ---
 
-// Load environment variables from .env file in dev environment
-if (process.env.NODE_ENV !== "production") {
-  const dotenv = await import("dotenv");
-  dotenv.config();
-}
-
 // Exit if any required environment variable is missing
 Object.keys(REQUIRED_ENV_VARS).forEach(exitIfMissing);
 

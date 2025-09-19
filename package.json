@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm prisma:generate && tsc",
-    "dev": "node ./bootstrap/validate-env-vars.mjs && tsx src/index.ts",
+    "dev": "node --env-file=.env ./bootstrap/validate-env-vars.mjs && tsx src/index.ts",
     "start": "node ./bootstrap/validate-env-vars.mjs && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky || true",
@@ -31,7 +31,6 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@types/node": "^22.17.2",
-    "dotenv": "^17.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "oxlint": "^1.12.0",
