@@ -1,8 +1,6 @@
 model ThreadCreatorConfig {
-  id String @id @default(cuid())
-
   // Configuration par serveur
-  guildId String @unique
+  guildId String @id
 
   // Canal où surveiller les messages
   channelId String
