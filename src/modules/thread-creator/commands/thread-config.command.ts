@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 import { declareCommand } from "../../../lib/command.js";
 import logger from "../../../lib/logger.js";
+import { Colors } from "../../../utils/colors.js";
 import threadCreatorService from "../services/thread-creator.service.js";
 
 export default declareCommand({
@@ -125,7 +126,7 @@ async function handleSetup(
   await threadCreatorService.updateConfig(guildId, updates);
 
   const embed = new EmbedBuilder()
-    .setColor(0x00ff00)
+    .setColor(Colors.FullGreen)
     .setTitle("✅ Configuration mise à jour")
     .addFields(
       {
@@ -178,7 +179,7 @@ async function handleStatus(
   const channel = interaction.guild?.channels.cache.get(config.channelId);
 
   const embed = new EmbedBuilder()
-    .setColor(config.enabled ? 0x00ff00 : 0xff9900)
+    .setColor(config.enabled ? Colors.FullGreen : Colors.Orange)
     .setTitle("📋 Configuration ThreadCreator")
     .addFields(
       {
@@ -219,7 +220,7 @@ async function handleDisable(
   await threadCreatorService.updateConfig(guildId, { enabled: false });
 
   const embed = new EmbedBuilder()
-    .setColor(0xff0000)
+    .setColor(Colors.FullRed)
     .setTitle("🔴 Module désactivé")
     .setDescription(
       "La création automatique de fils de discussion a été désactivée.\nUtilisez `/thread-config setup` pour la réactiver."
