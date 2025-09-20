@@ -7,11 +7,13 @@ import { declareCommand } from "../../lib/command.js";
 import moduleService from "../services/module.service.js";
 import { modulesMessage } from "../utils/core-messages.js";
 
+const PERMISSION_ADMINISTRATOR = 0x8;
+
 export default declareCommand({
   data: new SlashCommandBuilder()
     .setName("modules")
     .setDescription("Manage server modules")
-    .setDefaultMemberPermissions(0x8)
+    .setDefaultMemberPermissions(PERMISSION_ADMINISTRATOR)
     .setContexts([InteractionContextType.Guild]),
 
   async execute(interaction) {
