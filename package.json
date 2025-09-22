@@ -19,7 +19,7 @@
   "keywords": [],
   "author": "",
   "license": "GPL-3.0-or-later",
-  "packageManager": "pnpm@10.17.0",
+  "packageManager": "pnpm@10.17.1",
   "type": "module",
   "dependencies": {
     "@prisma/client": "6.16.2",
